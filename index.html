@@ -1,18 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta charset="utf-8" />
+    <title>JavaScriptの練習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./styles/Skeleton-2.0.4/css/skeleton.css" />
+    <link rel="stylesheet" href="./styles/metronome.css" />
+    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet" />
 </head>
 
 <body>
-    <h1>HTML works!</h1>
-    <script>
-        console.log("js test")
-    </script>
+    <div class="container">
+        <div class="row child--centered">
+            <button type="button" class="four columns" id="tempodown">Tempo-</button>
+            <div class="four columns">
+                <div id="tempo">100</div>
+                <input type="range" id="tempo_range" min="0" max="200" step="1" value="100" />
+            </div>
+            <button type="button" class="four columns" id="tempoup">Tempo+</button>
+        </div>
+        <div class="row child--centered">
+            <button type="button" class="four columns button-primary" id="play_stop">▶</button>
+        </div>
+        <div class="row child--centered">
+            <button type="button" class="four columns" id="timedown">Time-</button>
+            <div class="four columns" id="time">3</div>
+            <button type="button" class="four columns" id="timeplus">Time+</button>
+        </div>
+        <div class="child--centered">
+            <div id="n_times">0</div>
+        </div>
+    </div>
+    <script src="scripts/touch_action.js"></script>
+    <script src="scripts/metronome.js"></script>
 </body>
 
 </html>
