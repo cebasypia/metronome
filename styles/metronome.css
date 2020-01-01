@@ -7,6 +7,15 @@
 body {
     font-family: "Caveat", cursive;
 }
+
+.font--large {
+    font-size: 1.8em;
+}
+.button--play {
+    width: 70%;
+    font-size: 1.2em;
+}
+
 .input-range[type="range"] {
     -webkit-appearance: none;
     appearance: none;
