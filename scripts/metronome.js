@@ -2,27 +2,27 @@
 let tempo = 100; //テンポを120に設定
 let isPlaying = false; //再生中かどうか
 let time = 4; //拍子
-
-let timeOutIDs = [];
+let mainTimeOutIDs = [];
+let subTimeOutIDs = [];
 const gainValue = 0.1;
 
 //Tempo++ボタンイベント
-const tempoUp = document.getElementById("tempoup");
+const tempoUp = document.getElementById("tempo--up");
 addLongTouchEvent(tempoUp, function () {
     tempo++;
     document.getElementById("tempo").innerText = tempo;
-    document.getElementById("tempo_range").value = tempo;
+    document.getElementById("tempo--range").value = tempo;
 });
-
-//Tempo--ボタンクリックでTempo-1
-document.getElementById("tempodown").onclick = function () {
+//Tempo--ボタンイベント
+const tempoDown = document.getElementById("tempo--down");
+addLongTouchEvent(tempoDown, function () {
     tempo--;
     document.getElementById("tempo").innerText = tempo;
-    document.getElementById("tempo_range").value = tempo;
-};
+    document.getElementById("tempo--range").value = tempo;
+});
 
 //Tempoスライダーで数値変化
-var elem = document.getElementById("tempo_range");
+var elem = document.getElementById("tempo--range");
 var target = document.getElementById("tempo");
 var rangeValue = function (elem, target) {
     return function () {
@@ -33,30 +33,34 @@ var rangeValue = function (elem, target) {
 elem.addEventListener("input", rangeValue(elem, target));
 
 //Timeで拍子変更
-document.getElementById("timeplus").onclick = function () {
+document.getElementById("time--plus").onclick = function () {
     time++;
+    stopMetronome();
+    startMetronome();
     document.getElementById("time").innerText = time;
 };
 
-document.getElementById("timedown").onclick = function () {
+document.getElementById("time--down").onclick = function () {
     time--;
+    stopMetronome();
+    startMetronome();
     document.getElementById("time").innerText = time;
 };
 
 //Playボタンクリックで再生開始
-document.getElementById("play_stop").onclick = function () {
+document.getElementById("play").onclick = function () {
     if (!isPlaying) {
         console.log("start metronome");
         startMetronome();
 
         //再生中に表示変更
-        document.getElementById("play_stop").innerText = "■";
+        document.getElementById("play").innerText = "■";
         isPlaying = true;
     } else {
         console.log("stop metronome");
         stopMetronome();
         //停止中に表示変更
-        document.getElementById("play_stop").innerText = "▶";
+        document.getElementById("play").innerText = "▶";
         isPlaying = false;
     }
 };
@@ -88,13 +92,13 @@ function startMetronome() {
     // スケジュール済みのクリックのタイミングを覚えておきます。
     // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
     let lastClickTimeStamp = performance.now();
-    let count = 0;
     let nTime = 0;
+    let count = 0;
 
     gain.gain.setValueAtTime(gainValue, 0);
     gain.gain.linearRampToValueAtTime(0, 0.05);
 
-    document.getElementById("n_times").innerText = 1;
+    document.getElementById("n--times").innerText = 1;
 
     setTimeout(function main() {
         // DOMHighResTimeStampで考えながらループを回します
@@ -123,38 +127,43 @@ function startMetronome() {
             //もし拍子の頭だったら
             if (count % time == 0) {
                 osc.frequency.setValueAtTime(1500, nextClickTime);
-                console.log((count % time) + ":1500");
             } else {
                 osc.frequency.setValueAtTime(1200, nextClickTime);
-                console.log((count % time) + ":1200");
             }
 
-            setTimeout(function () {
+            const subTimeOutID = setTimeout(function () {
                 if (isPlaying) {
                     nTime++;
-                    document.getElementById("n_times").innerText = (nTime % time) + 1;
+                    document.getElementById("n--times").innerText = (nTime % time) + 1;
                 }
             }, nextClickTimeStamp - now);
-            console.log(nextClickTimeStamp - performance.now());
+
+            subTimeOutIDs.push(subTimeOutID);
+
             // 変換した時刻を使ってクリックを予約
             gain.gain.setValueAtTime(gainValue, nextClickTime);
             gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-
-            // setTimeout(function () {
-            //     j++;
-            //     document.getElementById("n_times").innerText = (j - 1) % time + 1;
-            // }, nextClickTimeStamp - now);
 
             // スケジュール済みクリックの時刻を更新
             lastClickTimeStamp = nextClickTimeStamp;
         }
         if (isPlaying) {
-            setTimeout(main, 700);
+            let mainTimeOutID = setTimeout(main, 700);
+            mainTimeOutIDs.push(mainTimeOutID);
         }
     }, 0);
-    console.log("endpoint");
 }
 function stopMetronome() {
     osc.stop();
-    document.getElementById("n_times").innerText = 0;
+
+    mainTimeOutIDs.forEach(function (timeOutID) {
+        clearTimeout(timeOutID);
+    });
+    MainTimeOutIDs = [];
+
+    subTimeOutIDs.forEach(function (timeOutID) {
+        clearTimeout(timeOutID);
+    });
+    subTimeOutIDs = [];
+    document.getElementById("n--times").innerText = 0;
 }
