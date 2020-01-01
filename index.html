@@ -11,26 +11,25 @@
 </head>
 
 <body>
+
     <div class="container">
         <div class="row child--centered">
-            <button type="button" class="four columns" id="tempodown">Tempo-</button>
-            <div class="four columns">
-                <div id="tempo">100</div>
-                <input type="range" id="tempo_range" min="0" max="200" step="1" value="100" />
-            </div>
-            <button type="button" class="four columns" id="tempoup">Tempo+</button>
+            <button type="button" class="four columns" id="tempo--down">Tempo-</button>
+            <div class="four columns" id="tempo">100</div>
+            <button type="button" class="four columns" id="tempo--up">Tempo+</button>
         </div>
+        <input type="range" class="input-range" id="tempo--range" min="0" max="200" step="1" value="100" />
         <div class="row child--centered">
-            <button type="button" class="four columns button-primary" id="play_stop">▶</button>
-        </div>
-        <div class="row child--centered">
-            <button type="button" class="four columns" id="timedown">Time-</button>
-            <div class="four columns" id="time">3</div>
-            <button type="button" class="four columns" id="timeplus">Time+</button>
+            <button type="button" class="four columns" id="time--down">Time-</button>
+            <div class="four columns" id="time">4</div>
+            <button type="button" class="four columns" id="time--plus">Time+</button>
         </div>
         <div class="child--centered">
-            <div id="n_times">0</div>
+            <div id="n--times">0</div>
         </div>
+    </div>
+    <div class="row child--centered">
+        <button type="button" class="four columns button-primary" id="play">▶</button>
     </div>
     <script src="scripts/touch_action.js"></script>
     <script src="scripts/metronome.js"></script>
