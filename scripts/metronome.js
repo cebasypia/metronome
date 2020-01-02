@@ -96,22 +96,22 @@ class Metronome {
         this.gain = this.context.createGain();
         this.clickSchedulerTimerID = 0;
         this.beatCountTimeOutIDs = [];
-    }
-
-    start() {
-        isPlaying = true;
 
         //Web audio api settings
         this.gain.gain.value = 0;
         this.osc.connect(this.gain).connect(this.context.destination);
+        this.osc.frequency.value = this.highTone;
         this.osc.start();
+    }
+
+    start() {
+        isPlaying = true;
 
         //Define
         let beat = 0;
         let count = 0;
 
         //First note
-        this.osc.frequency.value = this.highTone;
         this.gain.gain.setValueAtTime(this.gainValue, 0);
         this.gain.gain.linearRampToValueAtTime(0, 0.05);
         beatsElement.innerText = 1;
@@ -129,7 +129,6 @@ class Metronome {
 
             for (
                 let nextClickTimeStamp = lastClickTimeStamp + tick;
-                // let nextClickTimeStamp = now;
                 nextClickTimeStamp < now + 1000;
                 nextClickTimeStamp += tick
             ) {
@@ -177,7 +176,6 @@ class Metronome {
     stop() {
         isPlaying = false;
 
-        //AudioContext.close();
         this.context.close();
 
         //Cancel reservation
