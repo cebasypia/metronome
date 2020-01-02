@@ -1,178 +1,193 @@
+"use strict";
+
 //Define common
 let isPlaying = false; //再生中かどうか
 let tempo = 100; //テンポを120に設定
 let time = 4; //拍子
 
+let metronome;
+
 const gainValue = 0.1;
 
+//Get element
+const tempoElement = document.getElementById("tempo");
+const timeElement = document.getElementById("time");
 const beatsElement = document.getElementById("n--beats");
 
-//Tempo common 
-const tempoElement = document.getElementById("tempo");
-
-//Tempo add touch events
-const tempoUp = document.getElementById("tempo--up");
-addLongTouchEvent(tempoUp, function () {
-    if (tempo < 200) {
-        tempo++;
-        tempoElement.innerText = tempo;
-        document.getElementById("tempo--range").value = tempo;
-    }
-});
-
-const tempoDown = document.getElementById("tempo--down");
-addLongTouchEvent(tempoDown, function () {
-    if (tempo > 0) {
-        tempo--;
-        tempoElement.innerText = tempo;
-        document.getElementById("tempo--range").value = tempo;
-    }
-});
-
-//Tempo add input event to range
-const tempoRange = document.getElementById("tempo--range");
-tempoRange.addEventListener("input", function () {
-    tempo = tempoRange.value;
-    tempoElement.innerText = tempo;
-});
-
-
-//Time common
-const timeElement = document.getElementById("time");
-const changeTime = function () {
-    if (isPlaying) {
-        stopMetronome();
-        startMetronome();
-    }
-    timeElement.innerText = time;
-};
-
-//Time add click events
-document.getElementById("time--plus").addEventListener("click", function () {
-    if (time < 6) {
-        time++;
-        changeTime();
-    }
-});
-
-document.getElementById("time--down").addEventListener("click", function () {
-    if (time > 1) {
-        time--;
-        changeTime();
-    }
-});
-
-
-//Play 
-document.getElementById("play").addEventListener("click", function () {
-    if (!isPlaying) {
-        isPlaying = true;
-        document.getElementById("play").innerText = "■";
-        startMetronome();
-    } else {
-        isPlaying = false;
-        document.getElementById("play").innerText = "▶";
-        stopMetronome();
-    }
-});
-
-//Metronome Define
-let clickSchedulerTimerID;
-let beatCountTimeOutIDs = [];
-
-let context;
-let osc;
-let gain;
-
-//Metronome Start
-function startMetronome() {
-    //Web audio api settings
-    context = new AudioContext();
-    osc = context.createOscillator();
-    gain = context.createGain();
-    osc.frequency.value = 1500;
-    gain.gain.value = 0;
-    osc.connect(gain).connect(context.destination);
-    osc.start();
-
-    //Define
-    let beat = 0;
-    let count = 0;
-
-    //First note
-    gain.gain.setValueAtTime(gainValue, 0);
-    gain.gain.linearRampToValueAtTime(0, 0.05);
-    beatsElement.innerText = 1;
-
-    // スケジュール済みのクリックのタイミングを覚えておきます。
-    // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
-    let lastClickTimeStamp = context.currentTime * 1000;
-
-    //Loop function
-    function clickScheduler() {
-        const now = context.currentTime * 1000;
-
-        // ♩=120における四分音符長（ミリ秒
-        let tick = (60 * 1000) / tempo;
-
-        for (
-            let nextClickTimeStamp = lastClickTimeStamp + tick;
-            nextClickTimeStamp < now + 1000;
-            nextClickTimeStamp += tick
-        ) {
-            if (nextClickTimeStamp - now < 0) {
-                continue;
-            }
-
-            count++;
-
-            // 予約時間をループで使っていたDOMHighResTimeStampからAudioContext向けに変換
-            const nextClickTime = nextClickTimeStamp / 1000;
-
-            //Hi & Low tone
-            if (count % time == 0) {
-                osc.frequency.setValueAtTime(1500, nextClickTime);
-            } else {
-                osc.frequency.setValueAtTime(1200, nextClickTime);
-            }
-
-            //Beat count update
-            const beatCountTimeOutID = setTimeout(function () {
-                if (isPlaying) {
-                    beat++;
-                    beatsElement.innerText = (beat % time) + 1;
-                }
-            }, nextClickTimeStamp - now);
-
-            beatCountTimeOutIDs.push(beatCountTimeOutID);
-
-            //Reserve next click
-            gain.gain.setValueAtTime(gainValue, nextClickTime);
-            gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-
-            //Update lastClickTimeStamp 
-            lastClickTimeStamp = nextClickTimeStamp;
-            console.log(lastClickTimeStamp);
+//Tempo
+(function () {
+    //Tempo add touch events
+    const tempoUp = document.getElementById("tempo--up");
+    addLongTouchEvent(tempoUp, () => {
+        if (tempo < 200) {
+            tempo++;
+            tempoElement.innerText = tempo;
+            document.getElementById("tempo--range").value = tempo;
         }
+    });
+
+    const tempoDown = document.getElementById("tempo--down");
+    addLongTouchEvent(tempoDown, () => {
+        if (tempo > 0) {
+            tempo--;
+            tempoElement.innerText = tempo;
+            document.getElementById("tempo--range").value = tempo;
+        }
+    });
+
+    //Tempo add input event to range
+    const tempoRange = document.getElementById("tempo--range");
+    tempoRange.addEventListener("input", () => {
+        tempo = tempoRange.value;
+        tempoElement.innerText = tempo;
+    });
+}());
+
+//Time
+(function () {
+    //Time common
+    const changeTime = () => {
+        if (isPlaying) {
+            metronome.stop();
+            metronome = new Metronome(0.1, 1500, 1200);
+            metronome.start();
+        }
+        timeElement.innerText = time;
     };
 
-    //Loop start
-    clickScheduler();
-    clickSchedulerTimerID = setInterval(clickScheduler, 700);
-}
-
-//Metronome stop
-function stopMetronome() {
-    osc.stop();
-
-    //Cancel reservation
-    clearInterval(clickSchedulerTimerID);
-
-    beatCountTimeOutIDs.forEach(function (timeOutID) {
-        clearTimeout(timeOutID);
+    //Time add click events
+    document.getElementById("time--plus").addEventListener("click", () => {
+        if (time < 6) {
+            time++;
+            changeTime();
+        }
     });
-    beatCountTimeOutIDs = [];
 
-    //Update Beat count
-    beatsElement.innerText = 0;
+    document.getElementById("time--down").addEventListener("click", () => {
+        if (time > 1) {
+            time--;
+            changeTime();
+        }
+    });
+}());
+
+
+//Play
+(function () {
+    document.getElementById("play").addEventListener("click", () => {
+        if (!isPlaying) {
+            metronome = new Metronome(0.1, 1500, 1200);
+            metronome.start();
+            document.getElementById("play").innerText = "■";
+        } else {
+            metronome.stop();
+            document.getElementById("play").innerText = "▶";
+        }
+    });
+}());
+
+class Metronome {
+    constructor(gainValue, highTone, lowTone) {
+        this.gainValue = gainValue;
+        this.highTone = highTone;
+        this.lowTone = lowTone;
+        this.context = new AudioContext();
+        this.osc = this.context.createOscillator();
+        this.gain = this.context.createGain();
+        this.clickSchedulerTimerID = 0;
+        this.beatCountTimeOutIDs = [];
+    }
+
+    start() {
+        isPlaying = true;
+
+        //Web audio api settings
+        this.gain.gain.value = 0;
+        this.osc.connect(this.gain).connect(this.context.destination);
+        this.osc.start();
+
+        //Define
+        let beat = 0;
+        let count = 0;
+
+        //First note
+        this.osc.frequency.value = this.highTone;
+        this.gain.gain.setValueAtTime(this.gainValue, 0);
+        this.gain.gain.linearRampToValueAtTime(0, 0.05);
+        beatsElement.innerText = 1;
+
+        // スケジュール済みのクリックのタイミングを覚えておきます。
+        // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
+        let lastClickTimeStamp = this.context.currentTime * 1000;
+
+        //Loop function
+        const clickScheduler = () => {
+            const now = this.context.currentTime * 1000;
+
+            // ♩=120における四分音符長（ミリ秒
+            let tick = (60 * 1000) / tempo;
+
+            for (
+                let nextClickTimeStamp = lastClickTimeStamp + tick;
+                // let nextClickTimeStamp = now;
+                nextClickTimeStamp < now + 1000;
+                nextClickTimeStamp += tick
+            ) {
+                if (nextClickTimeStamp - now < 0) {
+                    continue;
+                }
+
+                count++;
+
+                // 予約時間をループで使っていたDOMHighResTimeStampからAudioContext向けに変換
+                const nextClickTime = nextClickTimeStamp / 1000;
+
+                //Hi & Low tone
+                if (count % time == 0) {
+                    this.osc.frequency.setValueAtTime(this.highTone, nextClickTime);
+                } else {
+                    this.osc.frequency.setValueAtTime(this.lowTone, nextClickTime);
+                }
+
+                //Beat count update
+                const beatCountTimeOutID = setTimeout(() => {
+                    if (isPlaying) {
+                        beat++;
+                        beatsElement.innerText = (beat % time) + 1;
+                    }
+                }, nextClickTimeStamp - now);
+
+                this.beatCountTimeOutIDs.push(beatCountTimeOutID);
+
+                //Reserve next click
+                this.gain.gain.setValueAtTime(this.gainValue, nextClickTime);
+                this.gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+
+                //Update lastClickTimeStamp 
+                lastClickTimeStamp = nextClickTimeStamp;
+                console.log(lastClickTimeStamp);
+            }
+        };
+        //Loop start
+        clickScheduler();
+        this.clickSchedulerTimerID = setInterval(clickScheduler, 700);
+    }
+
+    //Metronome stop
+    stop() {
+        isPlaying = false;
+
+        //AudioContext.close();
+        this.context.close();
+
+        //Cancel reservation
+        clearInterval(this.clickSchedulerTimerID);
+
+        this.beatCountTimeOutIDs.forEach((timeOutID) => {
+            clearTimeout(timeOutID);
+        });
+
+        //Update Beat count
+        beatsElement.innerText = 0;
+    }
 }
