@@ -66,19 +66,19 @@ document.getElementById("time--down").addEventListener("click", function () {
 //Play 
 document.getElementById("play").addEventListener("click", function () {
     if (!isPlaying) {
-        startMetronome();
-        document.getElementById("play").innerText = "■";
         isPlaying = true;
+        document.getElementById("play").innerText = "■";
+        startMetronome();
     } else {
-        stopMetronome();
-        document.getElementById("play").innerText = "▶";
         isPlaying = false;
+        document.getElementById("play").innerText = "▶";
+        stopMetronome();
     }
 });
 
 //Metronome Define
-let mainTimeOutIDs = [];
-let subTimeOutIDs = [];
+let clickSchedulerTimerID;
+let beatCountTimeOutIDs = [];
 
 let context;
 let osc;
@@ -108,12 +108,12 @@ function startMetronome() {
     // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
     let lastClickTimeStamp = context.currentTime * 1000;
 
-    //Loop
-    setTimeout(function main() {
+    //Loop function
+    function clickScheduler() {
         const now = context.currentTime * 1000;
 
         // ♩=120における四分音符長（ミリ秒
-        tick = (60 * 1000) / tempo;
+        let tick = (60 * 1000) / tempo;
 
         for (
             let nextClickTimeStamp = lastClickTimeStamp + tick;
@@ -137,14 +137,14 @@ function startMetronome() {
             }
 
             //Beat count update
-            const subTimeOutID = setTimeout(function () {
+            const beatCountTimeOutID = setTimeout(function () {
                 if (isPlaying) {
                     beat++;
                     beatsElement.innerText = (beat % time) + 1;
                 }
             }, nextClickTimeStamp - now);
 
-            subTimeOutIDs.push(subTimeOutID);
+            beatCountTimeOutIDs.push(beatCountTimeOutID);
 
             //Reserve next click
             gain.gain.setValueAtTime(gainValue, nextClickTime);
@@ -154,14 +154,11 @@ function startMetronome() {
             lastClickTimeStamp = nextClickTimeStamp;
             console.log(lastClickTimeStamp);
         }
+    };
 
-        //Next loop
-        if (isPlaying) {
-            let mainTimeOutID = setTimeout(main, 700);
-            mainTimeOutIDs.push(mainTimeOutID);
-        }
-
-    }, 0);
+    //Loop start
+    clickScheduler();
+    clickSchedulerTimerID = setInterval(clickScheduler, 700);
 }
 
 //Metronome stop
@@ -169,15 +166,12 @@ function stopMetronome() {
     osc.stop();
 
     //Cancel reservation
-    mainTimeOutIDs.forEach(function (timeOutID) {
-        clearTimeout(timeOutID);
-    });
-    MainTimeOutIDs = [];
+    clearInterval(clickSchedulerTimerID);
 
-    subTimeOutIDs.forEach(function (timeOutID) {
+    beatCountTimeOutIDs.forEach(function (timeOutID) {
         clearTimeout(timeOutID);
     });
-    subTimeOutIDs = [];
+    beatCountTimeOutIDs = [];
 
     //Update Beat count
     beatsElement.innerText = 0;
