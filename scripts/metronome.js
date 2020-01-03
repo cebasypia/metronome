@@ -1,25 +1,33 @@
-"use strict";
+//Constant definition
+const DEFAULT_N_BEAT = 0;
+
+//Get elements
+const nBeatElement = document.getElementById("n--beat");
+
+//Initialize elements
+nBeatElement.innerText = DEFAULT_N_BEAT;
+
 import { isPlaying, setisPlayingTo } from "./play.js"
 import { tempo } from "./tempo.js"
 import { beats } from "./beat.js";
-const nBeatElement = document.getElementById("n--beat");
 
 export let metronome;
 export function newMetronome(gainValue, highTone, lowTone) {
     metronome = new Metronome(gainValue, highTone, lowTone);
 }
 export class Metronome {
-    constructor(gainValue, highTone, lowTone) {
+    constructor(gainValue = 0.1, highTone = 1500, lowTone = 1200) {
         this.gainValue = gainValue;
         this.highTone = highTone;
         this.lowTone = lowTone;
-        this.context = new AudioContext();
-        this.osc = this.context.createOscillator();
-        this.gain = this.context.createGain();
         this.clickSchedulerTimerID = 0;
         this.beatCountTimeOutIDs = [];
 
         //Web audio api settings
+        this.context = new AudioContext();
+        this.osc = this.context.createOscillator();
+        this.gain = this.context.createGain();
+
         this.gain.gain.value = 0;
         this.osc.connect(this.gain).connect(this.context.destination);
         this.osc.frequency.value = this.highTone;
