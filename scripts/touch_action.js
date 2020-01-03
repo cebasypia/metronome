@@ -1,10 +1,14 @@
+//Constant definition
 const interval = 100;
-let timer;
+
+//Smartphone setting 
 const ua = navigator.userAgent.toLowerCase();
 const isSP = /iphone|ipod|ipad|android/.test(ua);
 const eventStart = isSP ? 'touchstart' : 'mousedown';
 const eventEnd = isSP ? 'touchend' : 'mouseup';
 const eventLeave = isSP ? 'touchmove' : 'mouseleave';
+
+let timer;
 
 function touchEventStart(elementArg, functionArg) {
     elementArg.addEventListener(eventStart, function (e) {
