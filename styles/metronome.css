@@ -11,8 +11,9 @@ body {
 .font--large {
     font-size: 1.8em;
 }
-.button--play {
+.button-primary {
     width: 70%;
+    font-family: Noto Sans Mono;
     font-size: 1.2em;
 }
 
