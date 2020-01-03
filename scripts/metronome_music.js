@@ -7,13 +7,13 @@ const rhythm = [60, 60, 60, 60, 100, 100, 100, 100];
 
 //Get elements
 const nBeatElement = document.getElementById("n--beat");
-const tempoElement = document.getElementById("tempo");
 const musicElement = document.getElementById("music");
 
 //Initialize elements
 nBeatElement.innerText = DEFAULT_N_BEAT;
 musicElement.innerText = FALSE_ICON;
 
+import { setTempoElements } from "./tempo.js"
 import { isPlaying, setisPlayingTo } from "./play.js"
 
 export let isMusicMode = false;
@@ -60,7 +60,7 @@ export class Music {
         this.gain.gain.setValueAtTime(this.gainValue, 0);
         this.gain.gain.linearRampToValueAtTime(0, 0.05);
         nBeatElement.innerText = 1;
-        tempoElement.innerText = rhythm[count];
+        setTempoElements(rhythm[count]);
 
 
         // スケジュール済みのクリックのタイミングを覚えておきます。
@@ -112,7 +112,7 @@ export class Music {
                         nBeat++;
                         nBeatElement.innerText = (nBeat % beats) + 1;
                         //暫定的に
-                        tempoElement.innerText = rhythm[nBeat];
+                        setTempoElements(rhythm[count]);
                     }
                 }, nextClickTimeStamp - now);
 

@@ -11,11 +11,13 @@ beatsElement.innerText = DEFAULT_BEATS;
 
 import { isPlaying } from "./play.js"
 import { metronome, newMetronome } from "./metronome.js"
+import { isMusicMode } from "./metronome_music.js"
 
 export let beats = DEFAULT_BEATS;
 export function addBeatEvents() {
     document.getElementById("beats--plus").addEventListener("click", () => {
         if (beats < MAX_BEATS) {
+            if (isMusicMode) return;
             beats++;
             beatsElement.innerText = beats;
             changeBeats();
@@ -24,6 +26,7 @@ export function addBeatEvents() {
 
     document.getElementById("beats--down").addEventListener("click", () => {
         if (beats > MIN_BEATS) {
+            if (isMusicMode) return;
             beats--;
             beatsElement.innerText = beats;
             changeBeats();

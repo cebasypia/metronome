@@ -18,23 +18,26 @@ tempoRange.min = MIN_TEMPO;
 tempoRange.step = TEMPO_STEP;
 
 import { addLongTouchEvent } from "./touch_action.js";
+import { isMusicMode } from "./metronome_music.js"
 
 export let tempo = DEFAULT_TEMPO;
 export function addTempoEvents() {
     //Tempo add touch events
     addLongTouchEvent(tempoUp, () => {
+        if (isMusicMode) return;
         if (tempo < MAX_TEMPO) {
             tempo++;
             tempoElement.innerText = tempo;
-            document.getElementById("tempo--range").value = tempo;
+            tempoUp.value = tempo;
         }
     });
 
     addLongTouchEvent(tempoDown, () => {
+        if (isMusicMode) return;
         if (tempo > MIN_TEMPO) {
             tempo--;
             tempoElement.innerText = tempo;
-            document.getElementById("tempo--range").value = tempo;
+            tempoRange.value = tempo;
         }
     });
 
@@ -43,4 +46,9 @@ export function addTempoEvents() {
         tempo = tempoRange.value;
         tempoElement.innerText = tempo;
     });
+}
+export function setTempoElements(tempo) {
+    if (!tempo) return;
+    tempoElement.innerText = tempo;
+    tempoRange.value = tempo;
 }
