@@ -1,6 +1,4 @@
-"use strict";
-
-// //Tempo
+// Tempo
 import { addTempoEvents } from "./tempo.js"
 addTempoEvents();
 
@@ -11,3 +9,7 @@ addBeatEvents();
 //Play
 import { addPlayEvent } from "./play.js"
 addPlayEvent();
+
+//Music
+import { addMusicEvent } from "./metronome_music.js"
+addMusicEvent();
