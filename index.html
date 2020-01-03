@@ -15,20 +15,20 @@
 
         <div class="row child--centered">
             <button type="button" class="four columns" id="tempo--down">Tempo-</button>
-            <div class="four columns font--large" id="tempo">100</div>
+            <div class="four columns font--large" id="tempo">110</div>
             <button type="button" class="four columns" id="tempo--up">Tempo+</button>
         </div>
 
-        <input type="range" class="input-range" id="tempo--range" min="0" max="200" step="1" value="100" />
+        <input type="range" class="input-range" id="tempo--range" min="20" max="220" step="1" value="100" />
 
         <div class="row child--centered">
-            <button type="button" class="four columns" id="time--down">Time-</button>
-            <div class="four columns font--large" id="time">4</div>
-            <button type="button" class="four columns" id="time--plus">Time+</button>
+            <button type="button" class="four columns" id="beats--down">Beats-</button>
+            <div class="four columns font--large" id="beats">4</div>
+            <button type="button" class="four columns" id="beats--plus">Beats+</button>
         </div>
 
         <div class="child--centered">
-            <div class="font--large" id="n--beats">0</div>
+            <div class="font--large" id="n--beat">0</div>
         </div>
 
         <div class="row child--centered">
@@ -37,8 +37,7 @@
 
     </div>
 
-    <script src="scripts/touch_action.js"></script>
-    <script src="scripts/metronome.js"></script>
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 
 </html>
