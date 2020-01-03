@@ -1,92 +1,14 @@
 "use strict";
+import { isPlaying, setisPlayingTo } from "./play.js"
+import { tempo } from "./tempo.js"
+import { beats } from "./beat.js";
+const nBeatElement = document.getElementById("n--beat");
 
-//Define common
-let isPlaying = false; //再生中かどうか
-let tempo = 100; //テンポを120に設定
-let time = 4; //拍子
-
-let metronome;
-
-const gainValue = 0.1;
-
-//Get element
-const tempoElement = document.getElementById("tempo");
-const timeElement = document.getElementById("time");
-const beatsElement = document.getElementById("n--beats");
-
-//Tempo
-(function () {
-    //Tempo add touch events
-    const tempoUp = document.getElementById("tempo--up");
-    addLongTouchEvent(tempoUp, () => {
-        if (tempo < 200) {
-            tempo++;
-            tempoElement.innerText = tempo;
-            document.getElementById("tempo--range").value = tempo;
-        }
-    });
-
-    const tempoDown = document.getElementById("tempo--down");
-    addLongTouchEvent(tempoDown, () => {
-        if (tempo > 0) {
-            tempo--;
-            tempoElement.innerText = tempo;
-            document.getElementById("tempo--range").value = tempo;
-        }
-    });
-
-    //Tempo add input event to range
-    const tempoRange = document.getElementById("tempo--range");
-    tempoRange.addEventListener("input", () => {
-        tempo = tempoRange.value;
-        tempoElement.innerText = tempo;
-    });
-}());
-
-//Time
-(function () {
-    //Time common
-    const changeTime = () => {
-        if (isPlaying) {
-            metronome.stop();
-            metronome = new Metronome(0.1, 1500, 1200);
-            metronome.start();
-        }
-        timeElement.innerText = time;
-    };
-
-    //Time add click events
-    document.getElementById("time--plus").addEventListener("click", () => {
-        if (time < 6) {
-            time++;
-            changeTime();
-        }
-    });
-
-    document.getElementById("time--down").addEventListener("click", () => {
-        if (time > 1) {
-            time--;
-            changeTime();
-        }
-    });
-}());
-
-
-//Play
-(function () {
-    document.getElementById("play").addEventListener("click", () => {
-        if (!isPlaying) {
-            metronome = new Metronome(0.1, 1500, 1200);
-            metronome.start();
-            document.getElementById("play").innerText = "■";
-        } else {
-            metronome.stop();
-            document.getElementById("play").innerText = "▶";
-        }
-    });
-}());
-
-class Metronome {
+export let metronome;
+export function newMetronome(gainValue, highTone, lowTone) {
+    metronome = new Metronome(gainValue, highTone, lowTone);
+}
+export class Metronome {
     constructor(gainValue, highTone, lowTone) {
         this.gainValue = gainValue;
         this.highTone = highTone;
@@ -105,16 +27,16 @@ class Metronome {
     }
 
     start() {
-        isPlaying = true;
+        setisPlayingTo(true);
 
         //Define
-        let beat = 0;
+        let nBeat = 0;
         let count = 0;
 
         //First note
         this.gain.gain.setValueAtTime(this.gainValue, 0);
         this.gain.gain.linearRampToValueAtTime(0, 0.05);
-        beatsElement.innerText = 1;
+        nBeatElement.innerText = 1;
 
         // スケジュール済みのクリックのタイミングを覚えておきます。
         // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
@@ -142,7 +64,7 @@ class Metronome {
                 const nextClickTime = nextClickTimeStamp / 1000;
 
                 //Hi & Low tone
-                if (count % time == 0) {
+                if (count % beats == 0) {
                     this.osc.frequency.setValueAtTime(this.highTone, nextClickTime);
                 } else {
                     this.osc.frequency.setValueAtTime(this.lowTone, nextClickTime);
@@ -151,8 +73,8 @@ class Metronome {
                 //Beat count update
                 const beatCountTimeOutID = setTimeout(() => {
                     if (isPlaying) {
-                        beat++;
-                        beatsElement.innerText = (beat % time) + 1;
+                        nBeat++;
+                        nBeatElement.innerText = (nBeat % beats) + 1;
                     }
                 }, nextClickTimeStamp - now);
 
@@ -174,7 +96,7 @@ class Metronome {
 
     //Metronome stop
     stop() {
-        isPlaying = false;
+        setisPlayingTo(false);
 
         this.context.close();
 
@@ -186,6 +108,6 @@ class Metronome {
         });
 
         //Update Beat count
-        beatsElement.innerText = 0;
+        nBeatElement.innerText = 0;
     }
 }
