@@ -25,7 +25,6 @@ function formatterSet() {
         return i;
     });
 };
-formatterSet();
 
 function formatter(ary) {
     for (let i = 0; i < ary.length; i++) {
@@ -63,7 +62,6 @@ function makeRhythmBuffer() {
         }
     }
 };
-makeRhythmBuffer();
 
 export let rhythm = [];
 function makeRhythm() {
@@ -89,7 +87,6 @@ function makeRhythm() {
         }
     }
 };
-makeRhythm();
 
 export function setRhythm(bar, beats, tempo, symbol) {
     rhythmBuffer = []
@@ -103,3 +100,5 @@ export function setRhythm(bar, beats, tempo, symbol) {
     makeRhythm();
     console.log(rhythm);
 }
+
+setRhythm(csvBarCount, csvBeats, csvTempo, csvSymbol);
