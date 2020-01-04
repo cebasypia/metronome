@@ -10,9 +10,10 @@ playElement.innerText = PLAY_ICON;
 
 import { metronome, newMetronome } from "./metronome.js"
 import { isMusicMode, music, newMusic } from "./metronome_music.js"
+import { rhythm } from "./rhythm.js"
 
 export let isPlaying = false;
-export function setisPlayingTo(boolean) {
+export function setIsPlayingTo(boolean) {
     isPlaying = boolean;
     playElement.innerText = boolean ? STOP_ICON : PLAY_ICON;
 }
@@ -27,7 +28,7 @@ export function addPlayEvent() {
             }
         } else {
             if (!isPlaying) {
-                newMusic([60, 60, 60, 60, 100, 100, 100, 100]);
+                newMusic(rhythm);
                 music.start();
             } else {
                 music.stop();
