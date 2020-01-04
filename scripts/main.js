@@ -6,6 +6,10 @@ addTempoEvents();
 import { addBeatEvents } from "./beat.js"
 addBeatEvents();
 
+//Bar
+import { addBarEvents } from "./bar.js"
+addBarEvents();
+
 //Play
 import { addPlayEvent } from "./play.js"
 addPlayEvent();
