@@ -7,7 +7,7 @@ const nBeatElement = document.getElementById("n--beat");
 //Initialize elements
 nBeatElement.innerText = DEFAULT_N_BEAT;
 
-import { isPlaying, setisPlayingTo } from "./play.js"
+import { isPlaying, setIsPlayingTo } from "./play.js"
 import { tempo } from "./tempo.js"
 import { beats } from "./beat.js";
 
@@ -35,7 +35,7 @@ export class Metronome {
     }
 
     start() {
-        setisPlayingTo(true);
+        setIsPlayingTo(true);
 
         //Define
         let nBeat = 0;
@@ -104,7 +104,7 @@ export class Metronome {
 
     //Metronome stop
     stop() {
-        setisPlayingTo(false);
+        setIsPlayingTo(false);
 
         this.context.close();
 
