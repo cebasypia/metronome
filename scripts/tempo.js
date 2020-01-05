@@ -28,7 +28,7 @@ export function addTempoEvents() {
         if (tempo < MAX_TEMPO) {
             tempo++;
             tempoElement.innerText = tempo;
-            tempoUp.value = tempo;
+            tempoRange.value = tempo;
         }
     });
 
