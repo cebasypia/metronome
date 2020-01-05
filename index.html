@@ -27,7 +27,7 @@
             <button type="button" class="four columns" id="beats--plus">Beats+</button>
         </div>
 
-        <div class="child--centered">
+        <div class="row child--centered">
             <button type="button" class="three columns" id="bar--down">Bar-</button>
             <div class="two columns" id="bar">1</div>
             <div class="two columns" id="count">1</div>
@@ -39,20 +39,22 @@
             <div class="font--large" id="n--beat">0</div>
         </div>
 
-        <div class="row child--centered">
+        <div class="child--centered">
             <button type="button" class="button-primary" id="play">▶</button>
         </div>
-        <div class="row child--centered">
-            <button type="button" class="button-primary" id="music">METRONOME</button>
+        <div class="child--centered">
+            <button type="button" class="button-primary" id="music">Metronome</button>
         </div>
-
+        <form class="child--centered">
+            <input type="file" id="rhythm--file" />
+        </form>
+        <form class="child--centered">
+            <textarea class="u-full-width" id="rhythm--text"></textarea>
+            <button type="button" id="submit--rhythm">≫</button>
+        </form>
     </div>
 
     <script type="module" src="./scripts/main.js"></script>
-    <!-- <script type="module">
-        import { setRhythm } from "./scripts/rhythm.js";
-        setRhythm("1,5,8", "3,4,", "100,120,", ",,");
-    </script> -->
 </body>
 
 </html>
