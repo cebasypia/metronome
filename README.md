@@ -1,17 +1,23 @@
 # metronome
-## Web Application Metronome 
-----
-### TODO
+
+## TODO
+---
+### RHYTHM
 * Make generating rhythm possible
 * set a rhythm input form
     * decide the design of the rhythm input form 
-    * get data from input form
     * Format data into rhythm array
+    * add table to set rhythm
+* decide file format
+---
+### OTHER
 * Organizing closure();
 * combine "metronome" and "metronome_music"
 * Value change with keyboard
 ---
-### DONE
+## DONE
+* get rhythm from csv file
+* get rhythm from input form as csv
 * add Bar control button
 * add setRhythm()
 * make rhythm array work in metronome_music
