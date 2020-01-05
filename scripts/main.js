@@ -17,3 +17,8 @@ addPlayEvent();
 //Music
 import { addMusicEvent } from "./metronome_music.js"
 addMusicEvent();
+
+//Rhythm
+import { addSubmitRhythm, addRhythmFileEvent } from "./rhythm.js"
+addSubmitRhythm();
+addRhythmFileEvent();
