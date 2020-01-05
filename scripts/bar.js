@@ -47,6 +47,7 @@ export function addBarEvents() {
 }
 export function setBarElements(bar) {
     barElement.innerText = rhythm[bar][0];
+    countElement.innerText = bar;
 }
 export function incrementBar() {
     bar++;
