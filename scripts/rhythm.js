@@ -1,22 +1,40 @@
-let csvBarCount = "1, 7, 22, 24, 28, 30, 31, 32, 33, 34, 35, 47, 48, 70, 84, 86, 88, 92";
-let csvBeats = "4, 3, 4, 3,, 4, 4, 2, 4, 2, 4, 2, 4, 3, 2, 4, 3";
-let csvTempo = "144,,,,,,,,,,,,,,,, 72";
-let csvSymbol = ',,,, "goto-31-2",, "repeat-24-1",,,,,,,,,,, fin';
-let barCountList;
-let beats;
-let tempo;
 let symbol;
 
-function formatterSet() {
-    barCountList = formatter(csvBarCount.split(","));
-    beats = formatter(csvBeats.split(","));
-    tempo = formatter(csvTempo.split(","));
+export let rhythm = [[1, 60, 60, 60, 60]];
+export function addSubmitRhythm() {
+    document.getElementById("submit--rhythm").addEventListener("click", () => {
+        csvConvert(document.getElementById("rhythm--text").value)
+    })
+}
+export function addRhythmFileEvent() {
+    document.getElementById("rhythm--file").addEventListener("change", (e) => {
+        let result = e.target.files[0];
+        const reader = new FileReader();
+        reader.readAsText(result);
+        reader.addEventListener('load', function () {
+            csvConvert(reader.result);
+        });
+    });
+}
+function csvConvert(csvText) {
+    csvText = csvText.split(/\r\n|\n/);
+    csvText = csvText.map(i => i.split(","));
+    csvText = csvText.map(i => i.map(i => convertToNumber(i)));
+    csvText[3] = csvText[3].map((i) => {
+        if (i) {
+            i = i.split("-");
+            i.push(0);
+            i = i.map(i => convertToNumber(i));
+        }
+        return i;
+    });
+    console.log(csvText[3]);
+    setRhythm(csvText[0], csvText[1], csvText[2], csvText[3]);
+};
+function symbolFormatter() {
     symbol = csvSymbol.split(",");
     symbol = symbol.map(i => i.replace(/"/g, ""));
     symbol = symbol.map(i => i.replace(" ", ""));
-    symbol = symbol.map((i) => {
-        return ((i !== "" ? i.split("-") : ""));
-    });
     symbol = symbol.map((i) => {
         if (Array.isArray(i)) {
             i = i.map(j => convertToNumber(j));
@@ -38,8 +56,9 @@ function convertToNumber(str) {
 };
 
 let rhythmBuffer = [];
-function makeRhythmBuffer() {
-    for (let iList = 0; iList < barCountList.length; iList++) {
+function makeRhythmBuffer(bars, beats, tempo, symbol) {
+    console.log(symbol);
+    for (let iList = 0; iList < bars.length; iList++) {
 
         //Symbol process
         switch (true) {
@@ -49,7 +68,7 @@ function makeRhythmBuffer() {
 
             default:
                 //同じ拍子とテンポ区間の処理
-                for (let iBar = barCountList[iList]; iBar < barCountList[iList + 1]; iBar++) {
+                for (let iBar = bars[iList]; iBar < bars[iList + 1]; iBar++) {
                     //countはリピート等を含んだ全体での最後のindex番号
                     let count = rhythmBuffer.push([iBar]) - 1;
                     // console.log(rhythmBuffer);
@@ -63,7 +82,6 @@ function makeRhythmBuffer() {
     }
 };
 
-export let rhythm = [];
 function makeRhythm() {
     for (let i = 0; i < rhythmBuffer.length; i++) {
         switch (true) {
@@ -88,17 +106,16 @@ function makeRhythm() {
     }
 };
 
-export function setRhythm(bar, beats, tempo, symbol) {
+function setRhythm(bars, beats, tempo, symbol) {
     rhythmBuffer = []
     rhythm = [];
-    csvBarCount = bar;
-    csvBeats = beats;
-    csvTempo = tempo;
-    csvSymbol = symbol;
-    formatterSet();
-    makeRhythmBuffer();
+    bars = bars;
+    beats = beats;
+    tempo = tempo;
+    symbol = symbol;
+
+    // symbolFormatter();
+    makeRhythmBuffer(bars, beats, tempo, symbol);
     makeRhythm();
     console.log(rhythm);
 }
-
-setRhythm(csvBarCount, csvBeats, csvTempo, csvSymbol);
