@@ -1,121 +1,87 @@
-let symbol;
+import { setBarsElements } from "./bar.js";
 
-export let rhythm = [[1, 60, 60, 60, 60]];
-export function addSubmitRhythm() {
-    document.getElementById("submit--rhythm").addEventListener("click", () => {
-        csvConvert(document.getElementById("rhythm--text").value)
-    })
-}
 export function addRhythmFileEvent() {
     document.getElementById("rhythm--file").addEventListener("change", (e) => {
         let result = e.target.files[0];
         const reader = new FileReader();
         reader.readAsText(result);
         reader.addEventListener('load', function () {
-            csvConvert(reader.result);
+            convertCsv(reader.result);
         });
     });
 }
-function csvConvert(csvText) {
+
+export let rhythm = [{
+    beats: 0,
+    tempo: 0,
+    tick: 0,
+    symbol: { event: "", args: [] },
+    count: 0
+}];
+function convertCsv(csvText) {
     csvText = csvText.split(/\r\n|\n/);
     csvText = csvText.map(i => i.split(","));
-    csvText = csvText.map(i => i.map(i => convertToNumber(i)));
-    csvText[3] = csvText[3].map((i) => {
-        if (i) {
-            i = i.split("-");
-            i.push(0);
-            i = i.map(i => convertToNumber(i));
+    for (let i = 0; i <= csvText[0][csvText[0].length - 1]; i++) {
+        rhythm[i] = {
+            beats: 0,
+            tempo: 0,
+            tick: 0,
+            symbol: { event: "", args: [] },
+            count: 0
         }
-        return i;
-    });
-    console.log(csvText[3]);
-    setRhythm(csvText[0], csvText[1], csvText[2], csvText[3]);
-};
-function symbolFormatter() {
-    symbol = csvSymbol.split(",");
-    symbol = symbol.map(i => i.replace(/"/g, ""));
-    symbol = symbol.map(i => i.replace(" ", ""));
-    symbol = symbol.map((i) => {
-        if (Array.isArray(i)) {
-            i = i.map(j => convertToNumber(j));
-            i.push(0);
+    }
+    for (let bar = 0; bar < csvText[0].length; bar++) {
+        for (let prop = 0; prop < csvText.length; prop++) {
+            if (csvText[prop][bar] !== "") {
+                switch (prop) {
+                    case 0:
+                        break;
+                    case 1:
+                        rhythm[csvText[0][bar]].beats = csvText[prop][bar];
+                        break;
+                    case 2:
+                        rhythm[csvText[0][bar]].tempo = csvText[prop][bar];
+                        rhythm[csvText[0][bar]].tick = 60 * 1000 / csvText[prop][bar];
+                        break;
+                    case 3:
+                        rhythm[csvText[0][bar]].symbol = symbolObjectFrom(csvText[prop][bar]);
+                        break;
+                    default:
+                }
+            }
         }
-        return i;
-    });
+    }
+    for (let i = 1; i < rhythm.length; i++) {
+        if (rhythm[i].beats === 0) {
+            rhythm[i].beats = rhythm[i - 1].beats;
+        }
+        if (rhythm[i].tempo === 0) {
+            rhythm[i].tempo = rhythm[i - 1].tempo;
+        }
+        if (rhythm[i].tick === 0) {
+            rhythm[i].tick = rhythm[i - 1].tick;
+        }
+    }
+    console.log(rhythm);
+    setBarsElements(rhythm.length - 1);
 };
 
-function formatter(ary) {
-    for (let i = 0; i < ary.length; i++) {
-        ary[i] = (ary[i] ? Number(ary[i]) : Number(ary[i - 1]));
+function symbolObjectFrom(symbolText) {
+    let symbolObject = { event: "", args: [] };
+    let tempSymbol = symbolText.split("-");
+    tempSymbol = tempSymbol.map(i => convertToNumber(i));
+    for (let i = 0; i < tempSymbol.length; i++) {
+        switch (i) {
+            case 0:
+                symbolObject.event = tempSymbol[i];
+                break;
+            default:
+                symbolObject.args.push(tempSymbol[i]);
+        }
     }
-    return ary;
-}
+    return symbolObject;
+};
 
 function convertToNumber(str) {
-    return (Number(str) | Number(str) === 0 ? Number(str) : str);
+    return (parseInt(str) | parseInt(str) === 0 ? parseInt(str) : str);
 };
-
-let rhythmBuffer = [];
-function makeRhythmBuffer(bars, beats, tempo, symbol) {
-    console.log(symbol);
-    for (let iList = 0; iList < bars.length; iList++) {
-
-        //Symbol process
-        switch (true) {
-            case /repeat/g.test(symbol[iList]):
-            case /goto/g.test(symbol[iList]):
-                rhythmBuffer.push(symbol[iList]);
-
-            default:
-                //同じ拍子とテンポ区間の処理
-                for (let iBar = bars[iList]; iBar < bars[iList + 1]; iBar++) {
-                    //countはリピート等を含んだ全体での最後のindex番号
-                    let count = rhythmBuffer.push([iBar]) - 1;
-                    // console.log(rhythmBuffer);
-
-                    //1小節内の処理
-                    for (let nBeat = 0; nBeat < beats[iList]; nBeat++) {
-                        rhythmBuffer[count].push(tempo[iList]);
-                    }
-                }
-        }
-    }
-};
-
-function makeRhythm() {
-    for (let i = 0; i < rhythmBuffer.length; i++) {
-        switch (true) {
-            case /repeat/g.test(rhythmBuffer[i]):
-                rhythmBuffer[i][3]++;
-
-                if (rhythmBuffer[i][3] === rhythmBuffer[i][2]) {
-                    i = rhythmBuffer.findIndex(val => val[0] === rhythmBuffer[i][1] - 1);
-                }
-                break;
-
-            case /goto/g.test(rhythmBuffer[i]):
-                rhythmBuffer[i][3]++;
-                if (rhythmBuffer[i][3] === rhythmBuffer[i][2]) {
-                    i = rhythmBuffer.findIndex(val => val[0] === rhythmBuffer[i][1] - 1);
-                }
-                break;
-
-            default:
-                rhythm.push(rhythmBuffer[i]);
-        }
-    }
-};
-
-function setRhythm(bars, beats, tempo, symbol) {
-    rhythmBuffer = []
-    rhythm = [];
-    bars = bars;
-    beats = beats;
-    tempo = tempo;
-    symbol = symbol;
-
-    // symbolFormatter();
-    makeRhythmBuffer(bars, beats, tempo, symbol);
-    makeRhythm();
-    console.log(rhythm);
-}
