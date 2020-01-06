@@ -19,6 +19,5 @@ import { addMusicEvent } from "./metronome_music.js"
 addMusicEvent();
 
 //Rhythm
-import { addSubmitRhythm, addRhythmFileEvent } from "./rhythm.js"
-addSubmitRhythm();
+import { addRhythmFileEvent } from "./rhythm.js"
 addRhythmFileEvent();
