@@ -1,6 +1,6 @@
 //Constant definition
-const DEFAULT_BAR = 0;
-const MIN_BAR = 0;
+const DEFAULT_BAR = 1;
+const MIN_BAR = 1;
 
 //Get elements
 const barElement = document.getElementById("bar");
@@ -10,13 +10,13 @@ const barPlus = document.getElementById("bar--plus");
 const barDown = document.getElementById("bar--down");
 
 //Initialize elements
-barElement.innerText = rhythm[DEFAULT_BAR][0];
+barElement.innerText = DEFAULT_BAR;
 barsElement.innerText = rhythm.length;
 
 import { isPlaying, setIsPlayingTo } from "./play.js"
 import { addLongTouchEvent } from "./touch_action.js";
 import { rhythm } from "./rhythm.js"
-import { isMusicMode, music, newMusic } from "./metronome_music.js"
+import { isMusicMode, music } from "./metronome_music.js"
 
 export let bar = DEFAULT_BAR;
 export function addBarEvents() {
@@ -37,7 +37,7 @@ export function addBarEvents() {
     });
 
     function changeBar() {
-        barElement.innerText = rhythm[bar][0];
+        barElement.innerText = bar;
         countElement.innerText = bar;
         if (isPlaying) {
             music.stop();
@@ -46,9 +46,12 @@ export function addBarEvents() {
     };
 }
 export function setBarElements(bar) {
-    barElement.innerText = rhythm[bar][0];
+    barElement.innerText = bar;
     countElement.innerText = bar;
 }
-export function incrementBar() {
-    bar++;
+export function setBarsElements(bars) {
+    barsElement.innerText = bars;
+}
+export function assignmentToBar(num) {
+    bar = num;
 }
