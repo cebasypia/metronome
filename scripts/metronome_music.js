@@ -12,7 +12,7 @@ nBeatElement.innerText = DEFAULT_N_BEAT;
 musicElement.innerText = FALSE_ICON;
 
 import { setTempoElements } from "./tempo.js"
-import { bar, incrementBar, setBarElements } from "./bar.js"
+import { bar, assignmentToBar, setBarElements } from "./bar.js"
 import { isPlaying, setIsPlayingTo } from "./play.js"
 
 export let isMusicMode = false;
@@ -31,7 +31,6 @@ export class Music {
         this.highTone = highTone;
         this.lowTone = lowTone;
         this.rhythm = rhythm;
-        this.ticks = rhythm.map(ary => ary.map(t => (60 * 1000 / t)));
 
         this.clickSchedulerTimerID = 0;
         this.beatCountTimeOutIDs = [];
@@ -56,8 +55,7 @@ export class Music {
         this.gain.gain.setValueAtTime(this.gainValue, 0);
         this.gain.gain.linearRampToValueAtTime(0, 0.05);
         nBeatElement.innerText = 1;
-        setTempoElements(this.rhythm[bar][nBeat]);
-
+        setTempoElements(this.rhythm[bar].tempo);
 
         // スケジュール済みのクリックのタイミングを覚えておきます。
         // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
@@ -68,21 +66,26 @@ export class Music {
             const now = this.context.currentTime * 1000;
 
             for (
-                let nextClickTimeStamp = lastClickTimeStamp + this.ticks[bar][nBeat];
+                let nextClickTimeStamp = lastClickTimeStamp + this.rhythm[bar].tick;
                 nextClickTimeStamp < now + 1000;
-                nextClickTimeStamp += this.ticks[bar][nBeat]
+                nextClickTimeStamp += this.rhythm[bar].tick
             ) {
                 if (nextClickTimeStamp - now < 0) {
                     continue;
                 }
-
                 nBeat++;
-                if (nBeat >= this.ticks[bar].length) {
-                    incrementBar();
+                if (nBeat > this.rhythm[bar].beats) {
+                    assignmentToBar(bar + 1);
                     nBeat = 1;
+                    this.rhythm[bar].count++;
+                    if (this.rhythm[bar].symbol.event !== "") {
+                        console.log(bar);
+                        symbolEvent();
+                    }
                 }
 
-                if (bar >= this.ticks.length) {
+                //Fin.
+                if (bar >= this.rhythm.length - 1) {
                     clearInterval(this.clickSchedulerTimerID);
                     setTimeout(() => {
                         this.stop();
@@ -94,7 +97,7 @@ export class Music {
                 const nextClickTime = nextClickTimeStamp / 1000;
 
                 //Hi & Low tone
-                if (nBeat % this.ticks[bar].length == 1) {
+                if (nBeat === 1) {
                     this.osc.frequency.setValueAtTime(this.highTone, nextClickTime);
                 } else {
                     this.osc.frequency.setValueAtTime(this.lowTone, nextClickTime);
@@ -102,15 +105,16 @@ export class Music {
 
                 //Elements update            
                 const createElementsUpdater = () => {
-                    const n = nBeat;
-                    const b = bar;
+                    const tmpNBeat = nBeat;
+                    const tmpBar = bar;
+
                     const elementsUpdate = () => {
                         const beatCountTimeOutID = setTimeout(() => {
                             if (isPlaying) {
-                                console.log(this.rhythm[b][0] + "小節: " + n + "拍目");
-                                nBeatElement.innerText = (n % this.ticks[b].length);
-                                setTempoElements(this.rhythm[b][n]);
-                                setBarElements(b)
+                                console.log(tmpBar + "小節: " + tmpNBeat + "拍目");
+                                nBeatElement.innerText = (tmpNBeat);
+                                setTempoElements(this.rhythm[tmpBar].tempo);
+                                setBarElements(tmpBar);
                             }
                         }, nextClickTimeStamp - now);
                         this.beatCountTimeOutIDs.push(beatCountTimeOutID);
@@ -126,12 +130,18 @@ export class Music {
 
                 //Update lastClickTimeStamp 
                 lastClickTimeStamp = nextClickTimeStamp;
-                // console.log(lastClickTimeStamp);
             }
         };
         //Loop start
         clickScheduler();
         this.clickSchedulerTimerID = setInterval(clickScheduler, 700);
+
+        const symbolEvent = () => {
+            if (this.rhythm[bar].symbol.args[1] === this.rhythm[bar].count) {
+                assignmentToBar(this.rhythm[bar].symbol.args[0]);
+                nBeat = 1;
+            }
+        };
     }
 
     stop() {
