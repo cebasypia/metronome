@@ -3,19 +3,23 @@
 ## TODO
 ---
 ### RHYTHM
-* Make generating rhythm possible
-* set a rhythm input form
-    * decide the design of the rhythm input form 
-    * Format data into rhythm array
-    * add table to set rhythm
+* set a rhythm input table
+    * decide the design of the table
+    * Format data into rhythm object
 * decide file format
 ---
 ### OTHER
+* learn create pure Object
+* count loop and show
+* design sound
 * Organizing closure();
 * combine "metronome" and "metronome_music"
 * Value change with keyboard
 ---
 ## DONE
+* change from rhythm =[ [ bar, beats, tempo, [ symbol event, arg1, arg2 ] ],[...],[...] ]
+to rhythm =[ { bar: 0, beats: 0, tempo: 0, symbol: { event: "" , arg1: 0, arg2: 0} }, {...},{...} ]
+* Make generating rhythm possible
 * get rhythm from csv file
 * get rhythm from input form as csv
 * add Bar control button
