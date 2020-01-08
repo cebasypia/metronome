@@ -1,13 +1,19 @@
 //Constant definition
 const DEFAULT_BEATS = 4;
-const MAX_BEATS = 6;
-const MIN_BEATS = 1;
+const BEATS = {
+    oneFour: { src: "./images/1_4.png", beats: 1 },
+    twoFour: { src: "./images/2_4.png", beats: 2 },
+    threeFour: { src: "./images/3_4.png", beats: 3 },
+    fourFour: { src: "./images/4_4.png", beats: 4 }
+};
 
 //Get elements
 const beatsElement = document.getElementById("beats");
+const beatsWindow = document.getElementById("beats--window");
+const beatsChange = document.getElementById("beats--change");
 
 //Initialize elements
-beatsElement.innerText = DEFAULT_BEATS;
+// beatsElement.innerText = DEFAULT_BEATS;
 
 import { isPlaying } from "./play.js"
 import { metronome, newMetronome } from "./metronome.js"
@@ -15,29 +21,36 @@ import { isMusicMode } from "./metronome_music.js"
 
 export let beats = DEFAULT_BEATS;
 export function addBeatEvents() {
-    document.getElementById("beats--plus").addEventListener("click", () => {
-        if (beats < MAX_BEATS) {
-            if (isMusicMode) return;
-            beats++;
-            beatsElement.innerText = beats;
-            changeBeats();
-        }
+    beatsElement.addEventListener("click", () => {
+        if (isMusicMode) return;
+        beatsWindow.style.visibility = "visible";
     });
-
-    document.getElementById("beats--down").addEventListener("click", () => {
-        if (beats > MIN_BEATS) {
-            if (isMusicMode) return;
-            beats--;
-            beatsElement.innerText = beats;
-            changeBeats();
-        }
+    beatsChange.addEventListener("click", () => {
+        if (isMusicMode) return;
+        beatsWindow.style.visibility = "hidden";
     });
+    const beatsImages = document.getElementsByClassName("circle");
+    for (let i = 0; i < beatsImages.length; i++) {
+        beatsImages[i].addEventListener("click", function () {
+            // MODIFY children
+            beatsElement.children[0].src = BEATS[this.getAttribute("value")].src;
+            beats = BEATS[this.getAttribute("value")].beats;
+            changeBeats();
+        });
+    }
+};
 
-    function changeBeats() {
-        if (isPlaying) {
-            metronome.stop();
-            newMetronome();
-            metronome.start();
-        }
-    };
+export function setBeatsElements(beats) {
+    if (!beats) return;
+    console.log(beats);
+    beatsElement.children[0].src = BEATS[beats.name].src;
+    beats = beats.value;
 }
+
+function changeBeats() {
+    if (isPlaying) {
+        metronome.stop();
+        newMetronome();
+        metronome.start();
+    }
+};
