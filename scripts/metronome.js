@@ -94,7 +94,6 @@ export class Metronome {
 
                 //Update lastClickTimeStamp 
                 lastClickTimeStamp = nextClickTimeStamp;
-                console.log(lastClickTimeStamp);
             }
         };
         //Loop start
