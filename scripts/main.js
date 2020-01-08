@@ -6,6 +6,10 @@ addTempoEvents();
 import { addBeatEvents } from "./beat.js"
 addBeatEvents();
 
+//Rhythm
+import { addRhythmFileEvent } from "./rhythm.js"
+addRhythmFileEvent();
+
 //Bar
 import { addBarEvents } from "./bar.js"
 addBarEvents();
@@ -17,7 +21,3 @@ addPlayEvent();
 //Music
 import { addMusicEvent } from "./metronome_music.js"
 addMusicEvent();
-
-//Rhythm
-import { addRhythmFileEvent } from "./rhythm.js"
-addRhythmFileEvent();
