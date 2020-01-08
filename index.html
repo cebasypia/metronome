@@ -8,49 +8,137 @@
     <link rel="stylesheet" href="./styles/Skeleton-2.0.4/css/skeleton.css" />
     <link rel="stylesheet" href="./styles/metronome.css" />
     <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="main">
+        <header>
+            <div class="row child--centered">
+                <button type="button" class="two columns child--centered button" id="menu">
+                    <i class=" material-icons">
+                        menu
+                    </i>
+                </button>
+                <div class="eight columns"></div>
+                <button type="button" class="two columns child--centered button" id="music">
+                    <i class=" material-icons">
+                        library_music
+                    </i>
+                </button>
+            </div>
+        </header>
 
+        <!-- TEMPO -->
         <div class="row child--centered">
             <button type="button" class="four columns" id="tempo--down">Tempo-</button>
             <div class="four columns font--large" id="tempo">100</div>
             <button type="button" class="four columns" id="tempo--up">Tempo+</button>
         </div>
 
+        <!-- TEMPO_RANGE -->
         <input type="range" class="input-range" id="tempo--range" />
 
+        <!-- BAR -->
         <div class="row child--centered">
-            <button type="button" class="four columns" id="beats--down">Beats-</button>
-            <div class="four columns font--large" id="beats">4</div>
-            <button type="button" class="four columns" id="beats--plus">Beats+</button>
+            <button type="button" class="four columns" id="bar--down">Bar-</button>
+            <div class="row four columns">
+                <div class="one-third column" id="bar">1</div>
+                <div class="one-third column" id="count">1</div>
+                <div class="one-third column" id="bars">1</div>
+            </div>
+            <button type="button" class="four columns" id="bar--plus">Bar+</button>
         </div>
 
+        <!-- BEATS, nBEAT, SETTING -->
         <div class="row child--centered">
-            <button type="button" class="three columns" id="bar--down">Bar-</button>
-            <div class="two columns" id="bar">1</div>
-            <div class="two columns" id="count">1</div>
-            <div class="two columns" id="bars">1</div>
-            <button type="button" class="three columns" id="bar--plus">Bar+</button>
+            <!-- <button type="button" class="four columns" id="beats--down">Beats-</button> -->
+            <!-- <div class="two columns font--large" id="beats">4</div> -->
+            <!-- <button type="button" class="four columns" id="beats--plus">Beats+</button> -->
+            <div class="three columns" id="beats">
+                <img src="./images/4_4.png" alt="拍子">
+            </div>
+            <div class="one columns"></div>
+
+            <div class="four columns font--large" id="n--beat">0</div>
+
+            <div class="two columns font--large"></div>
+
+            <div class="two columns font--large">
+                <i class="material-icons">
+                    build
+                </i>
+            </div>
         </div>
 
-        <div class="child--centered">
-            <div class="font--large" id="n--beat">0</div>
+        <!-- PLAY -->
+        <div class="row child--centered">
+            <button type="button" class="button-primary twelve columns" id="play">
+                <i class="material-icons">
+                    play_arrow
+                </i>
+                <i class="material-icons">
+                    stop
+                </i>
+            </button>
         </div>
 
-        <div class="child--centered">
-            <button type="button" class="button-primary" id="play">▶</button>
-        </div>
-        <div class="child--centered">
-            <button type="button" class="button-primary" id="music">Metronome</button>
-        </div>
-        <form class="child--centered">
+        <!-- FILE -->
+        <div class="row child--centered">
+            <label for="rhythm--file" class="two columns child--centered button">
+                <i class=" material-icons">
+                    folder_open
+                </i>
+            </label>
             <input type="file" id="rhythm--file" />
-        </form>
+        </div>
+
+        <!-- TABLE -->
+        <div class="child--centered">
+            <table class="u-full-width" id="rhythmEditingTable">
+                <thead>
+                    <th>小説番号</th>
+                    <th>拍子</th>
+                    <th>テンポ</th>
+                    <th>ジャンプ</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>4</td>
+                        <td>60</td>
+                        <td>
+                            <div>1</div>
+                            <div>2</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container" id="beats--window">
+        <div id="beats--select">
+            <div class="row child--centered">
+                <div class="three columns child--centered padding">
+                    <img class="circle" src="./images/1_4.png" alt="拍子" value="oneFour">
+                </div>
+                <div class="three columns child--centered padding">
+                    <img class="circle" src="./images/2_4.png" alt="拍子" value="twoFour">
+                </div>
+                <div class="three columns child--centered padding">
+                    <img class="circle" src="./images/3_4.png" alt="拍子" value="threeFour">
+                </div>
+                <div class="three columns child--centered padding">
+                    <img class="circle" src="./images/4_4.png" alt="拍子" value="fourFour">
+                </div>
+            </div>
+            <button type="button" class="button" id="beats--change">submit</button>
+        </div>
     </div>
 
     <script type="module" src="./scripts/main.js"></script>
+    <script src="./scripts/table.js"></script>
 </body>
 
 </html>
