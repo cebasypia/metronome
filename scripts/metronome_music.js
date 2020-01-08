@@ -1,7 +1,7 @@
 //Constant definition
 const DEFAULT_N_BEAT = 0;
-const TRUE_ICON = "Music MODE";
-const FALSE_ICON = "Metronome"
+const TRUE_ICON = "album";
+const FALSE_ICON = "library_music"
 
 //Get elements
 const nBeatElement = document.getElementById("n--beat");
@@ -9,11 +9,12 @@ const musicElement = document.getElementById("music");
 
 //Initialize elements
 nBeatElement.innerText = DEFAULT_N_BEAT;
-musicElement.innerText = FALSE_ICON;
+// musicElement.innerText = FALSE_ICON;
 
 import { setTempoElements } from "./tempo.js"
 import { bar, assignmentToBar, setBarElements } from "./bar.js"
 import { isPlaying, setIsPlayingTo } from "./play.js"
+import { setBeatsElements } from "./beat.js"
 
 export let isMusicMode = false;
 export function setIsMusicModeTo(boolean) {
@@ -74,7 +75,7 @@ export class Music {
                     continue;
                 }
                 nBeat++;
-                if (nBeat > this.rhythm[bar].beats) {
+                if (nBeat > this.rhythm[bar].beats.value) {
                     assignmentToBar(bar + 1);
                     nBeat = 1;
                     this.rhythm[bar].count++;
@@ -115,6 +116,7 @@ export class Music {
                                 nBeatElement.innerText = (tmpNBeat);
                                 setTempoElements(this.rhythm[tmpBar].tempo);
                                 setBarElements(tmpBar);
+                                setBeatsElements(this.rhythm[tmpBar].beats)
                             }
                         }, nextClickTimeStamp - now);
                         this.beatCountTimeOutIDs.push(beatCountTimeOutID);
