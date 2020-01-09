@@ -11,7 +11,7 @@ const barDown = document.getElementById("bar--down");
 
 //Initialize elements
 barElement.innerText = DEFAULT_BAR;
-barsElement.innerText = rhythm.length;
+barsElement.innerText = DEFAULT_BAR;
 
 import { isPlaying, setIsPlayingTo } from "./play.js"
 import { addLongTouchEvent } from "./touch_action.js";
@@ -22,7 +22,7 @@ export let bar = DEFAULT_BAR;
 export function addBarEvents() {
     addLongTouchEvent(barPlus, () => {
         if (!isMusicMode) return;
-        if (bar < rhythm.length - 1) {
+        if (bar < rhythm.bars - 1) {
             bar++;
             changeBar();
         }
