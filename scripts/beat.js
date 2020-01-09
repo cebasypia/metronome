@@ -1,10 +1,14 @@
 //Constant definition
 const DEFAULT_BEATS = 4;
 const BEATS = {
-    oneFour: { src: "./images/1_4.png", beats: 1 },
-    twoFour: { src: "./images/2_4.png", beats: 2 },
-    threeFour: { src: "./images/3_4.png", beats: 3 },
-    fourFour: { src: "./images/4_4.png", beats: 4 }
+    "1/4": { src: "./images/1_4.png", beats: 1 },
+    "2/4": { src: "./images/2_4.png", beats: 2 },
+    "3/4": { src: "./images/3_4.png", beats: 3 },
+    "4/4": { src: "./images/4_4.png", beats: 4 }
+    //     oneFour: { src: "./images/1_4.png", beats: 1 },
+    //     twoFour: { src: "./images/2_4.png", beats: 2 },
+    //     threeFour: { src: "./images/3_4.png", beats: 3 },
+    //     fourFour: { src: "./images/4_4.png", beats: 4 }
 };
 
 //Get elements
@@ -41,9 +45,9 @@ export function addBeatEvents() {
 };
 
 export function setBeatsElements(beats) {
+    // console.log(beats);
     if (!beats) return;
-    console.log(beats);
-    beatsElement.children[0].src = BEATS[beats.name].src;
+    beatsElement.children[0].src = BEATS[beats.str].src;
     beats = beats.value;
 }
 
