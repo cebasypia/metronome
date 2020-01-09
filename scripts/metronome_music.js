@@ -1,7 +1,14 @@
 //Constant definition
 const DEFAULT_N_BEAT = 0;
 const TRUE_ICON = "album";
-const FALSE_ICON = "library_music"
+const FALSE_ICON = "library_music";
+
+const BEATS = {
+    "1/4": { "str": "1/4", "num": 1 },
+    "2/4": { "str": "2/4", "num": 2 },
+    "3/4": { "str": "3/4", "num": 3 },
+    "4/4": { "str": "4/4", "num": 4 }
+};
 
 //Get elements
 const nBeatElement = document.getElementById("n--beat");
@@ -48,15 +55,25 @@ export class Music {
     }
     start() {
         setIsPlayingTo(true);
+        const test = (str) => {
+            for (let i = bar; i >= 1; i--) {
+                if (i in this.rhythm && str in this.rhythm[i]) {
+                    return this.rhythm[i][str];
+                }
+            }
+        };
 
         //Define
         let nBeat = 1;
+        let tempo = test("tempo");
+        let tick = (1000 * 60) / tempo;
+        let beats = Object.assign({}, BEATS[test("beats")]);
 
         //First note
         this.gain.gain.setValueAtTime(this.gainValue, 0);
         this.gain.gain.linearRampToValueAtTime(0, 0.05);
         nBeatElement.innerText = 1;
-        setTempoElements(this.rhythm[bar].tempo);
+        setTempoElements(tempo);
 
         // スケジュール済みのクリックのタイミングを覚えておきます。
         // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
@@ -67,26 +84,37 @@ export class Music {
             const now = this.context.currentTime * 1000;
 
             for (
-                let nextClickTimeStamp = lastClickTimeStamp + this.rhythm[bar].tick;
+                let nextClickTimeStamp = lastClickTimeStamp + tick;
                 nextClickTimeStamp < now + 1000;
-                nextClickTimeStamp += this.rhythm[bar].tick
+                nextClickTimeStamp += tick
             ) {
                 if (nextClickTimeStamp - now < 0) {
                     continue;
                 }
                 nBeat++;
-                if (nBeat > this.rhythm[bar].beats.value) {
+                if (nBeat > beats.num) {
                     assignmentToBar(bar + 1);
                     nBeat = 1;
-                    this.rhythm[bar].count++;
-                    if (this.rhythm[bar].symbol.event !== "") {
-                        console.log(bar);
-                        symbolEvent();
+                    if (bar in this.rhythm) {
+                        this.rhythm[bar].count++;
+                        console.log(this.rhythm[bar].count);
+                        if ("tempo" in this.rhythm[bar]) {
+                            tick = (1000 * 60) / this.rhythm[bar].tempo;
+                        }
+                        if ("beats" in this.rhythm[bar]) {
+                            beats = BEATS[this.rhythm[bar].beats];
+                        }
+                        if ("jump" in this.rhythm[bar]) {
+                            console.log(this.rhythm[bar]);
+                            if (this.rhythm[bar].jump.time === this.rhythm[bar].count) {
+                                assignmentToBar(this.rhythm[bar].jump.to);
+                            }
+                        }
                     }
                 }
 
                 //Fin.
-                if (bar >= this.rhythm.length - 1) {
+                if (bar >= this.rhythm.bars - 1) {
                     clearInterval(this.clickSchedulerTimerID);
                     setTimeout(() => {
                         this.stop();
@@ -105,26 +133,18 @@ export class Music {
                 }
 
                 //Elements update            
-                const createElementsUpdater = () => {
-                    const tmpNBeat = nBeat;
-                    const tmpBar = bar;
-
-                    const elementsUpdate = () => {
-                        const beatCountTimeOutID = setTimeout(() => {
-                            if (isPlaying) {
-                                console.log(tmpBar + "小節: " + tmpNBeat + "拍目");
-                                nBeatElement.innerText = (tmpNBeat);
-                                setTempoElements(this.rhythm[tmpBar].tempo);
-                                setBarElements(tmpBar);
-                                setBeatsElements(this.rhythm[tmpBar].beats)
-                            }
-                        }, nextClickTimeStamp - now);
-                        this.beatCountTimeOutIDs.push(beatCountTimeOutID);
-                    }
-                    return elementsUpdate;
+                const createElementsUpdater = (nBeat, bar, tempo, beats) => {
+                    return setTimeout(() => {
+                        if (isPlaying) {
+                            nBeatElement.innerText = (nBeat);
+                            setTempoElements(tempo);
+                            setBarElements(bar);
+                            setBeatsElements(beats)
+                            console.log(`${bar}小節目`);
+                        }
+                    }, nextClickTimeStamp - now);
                 }
-                let updateElements = createElementsUpdater();
-                updateElements();
+                this.beatCountTimeOutIDs.push(createElementsUpdater(nBeat, bar, tempo, beats));
 
                 //Reserve next click
                 this.gain.gain.setValueAtTime(this.gainValue, nextClickTime);
@@ -137,13 +157,6 @@ export class Music {
         //Loop start
         clickScheduler();
         this.clickSchedulerTimerID = setInterval(clickScheduler, 700);
-
-        const symbolEvent = () => {
-            if (this.rhythm[bar].symbol.args[1] === this.rhythm[bar].count) {
-                assignmentToBar(this.rhythm[bar].symbol.args[0]);
-                nBeat = 1;
-            }
-        };
     }
 
     stop() {
@@ -161,8 +174,6 @@ export class Music {
         //Update Beat count
         nBeatElement.innerText = 0;
     }
-
-
 }
 
 import { metronome } from "./metronome.js"
