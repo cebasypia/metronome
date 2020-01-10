@@ -26,7 +26,7 @@ import { setBeatsElements } from "./beat.js"
 export let isMusicMode = false;
 export function setIsMusicModeTo(boolean) {
     isMusicMode = boolean;
-    musicElement.innerText = boolean ? TRUE_ICON : FALSE_ICON;
+    // musicElement.innerText = boolean ? TRUE_ICON : FALSE_ICON;
 }
 
 export let music;
@@ -177,19 +177,40 @@ export class Music {
 }
 
 import { metronome } from "./metronome.js"
+import { setRhythmTo } from "./rhythm.js"
 
 export function addMusicEvent() {
-    musicElement.addEventListener("click", () => {
-        if (isMusicMode) {
-            setIsMusicModeTo(false);
-            if (isPlaying) {
-                music.stop();
+    musicElement.addEventListener("change", (event) => {
+        if (localStorage.getItem(event.target.value)) {
+            const buf = localStorage.getItem(event.target.value);
+            setRhythmTo(JSON.parse(buf))
+            if (isMusicMode) {
+                if (isPlaying) music.stop();
+                assignmentToBar(1);
+            } else {
+                if (isPlaying) metronome.stop();
+                setIsMusicModeTo(true);
             }
         } else {
-            setIsMusicModeTo(true);
-            if (isPlaying) {
-                metronome.stop();
+            if (isMusicMode) {
+                if (isPlaying) music.stop();
+                setIsMusicModeTo(false);
             }
         }
     });
 }
+// export function addMusicEvent() {
+//     musicElement.addEventListener("click", () => {
+//         if (isMusicMode) {
+//             setIsMusicModeTo(false);
+//             if (isPlaying) {
+//                 music.stop();
+//             }
+//         } else {
+//             setIsMusicModeTo(true);
+//             if (isPlaying) {
+//                 metronome.stop();
+//             }
+//         }
+//     });
+// }
