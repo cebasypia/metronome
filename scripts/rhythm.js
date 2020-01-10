@@ -8,10 +8,13 @@ const TIME = "time";
 const BARS = "bars";
 
 const RHYTHM_FILE_ID = "rhythm--file";
+const MUSIC_ELEMENT_ID = "music"
+
+const musicElement = document.getElementById(MUSIC_ELEMENT_ID)
 
 import { setBarsElements } from "./bar.js";
 
-export const rhythm = {};
+export let rhythm = {};
 
 export function addRhythmFileEvent() {
     document.getElementById(RHYTHM_FILE_ID).addEventListener("change", (e) => {
@@ -22,7 +25,11 @@ export function addRhythmFileEvent() {
             csvToJSON(reader.result);
         });
     });
-}
+};
+
+export function setRhythmTo(obj) {
+    rhythm = obj;
+};
 
 function csvToJSON(csvText) {
     csvText = csvText.split(/\r\n|\n/);
@@ -63,9 +70,24 @@ function csvToJSON(csvText) {
         }
     }
     console.log(rhythm);
+    localStorage.setItem("loadFile", JSON.stringify(rhythm));
     setBarsElements(rhythm[BARS]);
 };
 
 function convertToNumber(str) {
     return (parseInt(str) | parseInt(str) === 0 ? parseInt(str) : str);
+};
+
+export function refreshRhythm() {
+    while (musicElement.lastChild) {
+        musicElement.removeChild(musicElement.lastChild);
+    }
+    for (let i = 0; i < localStorage.length; i++) {
+        const option = document.createElement("option");
+        option.text = option.value = localStorage.key(i);
+        musicElement.appendChild(option);
+    }
+    const option = document.createElement("option");
+    option.text = option.value = "戻る";
+    musicElement.appendChild(option);
 };
