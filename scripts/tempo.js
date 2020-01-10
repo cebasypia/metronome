@@ -47,8 +47,8 @@ export function addTempoEvents() {
         tempoElement.innerText = tempo;
     });
 }
-export function setTempoElements(tempo) {
-    if (!tempo) return;
+export function setTempoElements(getTempo) {
+    if (Number(getTempo)) tempo = getTempo;
     tempoElement.innerText = tempo;
     tempoRange.value = tempo;
-}
+};
