@@ -7,8 +7,9 @@ import { addBeatEvents } from "./beat.js"
 addBeatEvents();
 
 //Rhythm
-import { addRhythmFileEvent } from "./rhythm.js"
+import { addRhythmFileEvent, refreshRhythm } from "./rhythm.js"
 addRhythmFileEvent();
+refreshRhythm();
 
 //Bar
 import { addBarEvents } from "./bar.js"
