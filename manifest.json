@@ -1,0 +1,13 @@
+{
+    "short_name": "Metronome",
+    "name": "PWA Metronome app",
+    "display": "standalone",
+    "start_url": "index.html",
+    "icons": [
+        {
+            "src": "images/icon.png",
+            "sizes": "300x300",
+            "type": "image/png"
+        }
+    ]
+}

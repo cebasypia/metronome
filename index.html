@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>Metronome</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="./styles/Skeleton-2.0.4/css/skeleton.css" />
     <link rel="stylesheet" href="./styles/metronome.css" />
     <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet" />
@@ -138,6 +139,17 @@
             <button type="button" class="button" id="beats--change">submit</button>
         </div>
     </div>
+
+    <script>
+        // service workerの登録関係
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./scripts/service_worker.js').then(function (registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }).catch(function (err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        }
+    </script>
 
     <script type="module" src="./scripts/main.js"></script>
     <script src="./scripts/table.js"></script>
