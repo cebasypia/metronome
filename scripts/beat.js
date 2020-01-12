@@ -1,14 +1,10 @@
 //Constant definition
-const DEFAULT_BEATS = 4;
+const DEFAULT_BEATS = "4/4";
 const BEATS = {
-    "1/4": { src: "./images/1_4.png", beats: 1 },
-    "2/4": { src: "./images/2_4.png", beats: 2 },
-    "3/4": { src: "./images/3_4.png", beats: 3 },
-    "4/4": { src: "./images/4_4.png", beats: 4 }
-    //     oneFour: { src: "./images/1_4.png", beats: 1 },
-    //     twoFour: { src: "./images/2_4.png", beats: 2 },
-    //     threeFour: { src: "./images/3_4.png", beats: 3 },
-    //     fourFour: { src: "./images/4_4.png", beats: 4 }
+    "1/4": { src: "./images/1_4.png", value: 1 },
+    "2/4": { src: "./images/2_4.png", value: 2 },
+    "3/4": { src: "./images/3_4.png", value: 3 },
+    "4/4": { src: "./images/4_4.png", value: 4 }
 };
 
 //Get elements
@@ -21,9 +17,9 @@ const beatsChange = document.getElementById("beats--change");
 
 import { isPlaying } from "./play.js"
 import { metronome, newMetronome } from "./metronome.js"
-import { isMusicMode } from "./metronome_music.js"
+import { isMusicMode } from "./music.js"
 
-export let beats = DEFAULT_BEATS;
+export let beats = BEATS[DEFAULT_BEATS];
 export function addBeatEvents() {
     beatsElement.addEventListener("click", () => {
         if (isMusicMode) return;
@@ -38,19 +34,18 @@ export function addBeatEvents() {
         beatsImages[i].addEventListener("click", function () {
             // MODIFY children
             beatsElement.children[0].src = BEATS[this.getAttribute("value")].src;
-            beats = BEATS[this.getAttribute("value")].beats;
+            beats = BEATS[this.getAttribute("value")];
             changeBeats();
         });
     }
 };
 
-export function setBeatsElements(beats) {
-    // console.log(beats);
-    if (!beats) return;
-    beatsElement.children[0].src = BEATS[beats.str].src;
-    beats = beats.value;
+export function setBeats(getBeats) {
+    beats = BEATS[getBeats];
 }
-
+export function refreshBeatsElements(getBeats) {
+    beatsElement.children[0].src = getBeats.src;
+}
 function changeBeats() {
     if (isPlaying) {
         metronome.stop();
