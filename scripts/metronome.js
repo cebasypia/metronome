@@ -4,22 +4,28 @@ const DEFAULT_N_BEAT = 0;
 //Get elements
 const nBeatElement = document.getElementById("n--beat");
 
+
 //Initialize elements
 nBeatElement.innerText = DEFAULT_N_BEAT;
 
 import { isPlaying, setIsPlayingTo } from "./play.js"
-import { tempo } from "./tempo.js"
-import { beats } from "./beat.js";
+import { isMusicMode } from "./music.js"
+import { beats, setBeats, refreshBeatsElements } from "./beat.js"
+import { tempo, setTempo, refreshTempoElements } from "./tempo.js"
+import { bar, assignmentToBar, setBarElements } from "./bar.js"
 
 export let metronome;
 export function newMetronome(gainValue, highTone, lowTone) {
     metronome = new Metronome(gainValue, highTone, lowTone);
 }
+
 export class Metronome {
-    constructor(gainValue = 0.1, highTone = 1500, lowTone = 1200) {
+    constructor(rhythm = {}, gainValue = 0.1, highTone = 1500, lowTone = 1200) {
         this.gainValue = gainValue;
         this.highTone = highTone;
         this.lowTone = lowTone;
+        this.rhythm = rhythm;
+
         this.clickSchedulerTimerID = 0;
         this.beatCountTimeOutIDs = [];
 
@@ -33,13 +39,22 @@ export class Metronome {
         this.osc.frequency.value = this.highTone;
         this.osc.start();
     }
-
     start() {
         setIsPlayingTo(true);
+        const test = (str) => {
+            for (let i = bar; i >= 1; i--) {
+                if (i in this.rhythm && str in this.rhythm[i]) {
+                    return this.rhythm[i][str];
+                }
+            }
+        };
 
         //Define
-        let nBeat = 0;
-        let count = 0;
+        if (isMusicMode) {
+            setTempo(test("tempo"));
+            setBeats(test("beats"));
+        }
+        let nBeat = 1;
 
         //First note
         this.gain.gain.setValueAtTime(this.gainValue, 0);
@@ -53,9 +68,7 @@ export class Metronome {
         //Loop function
         const clickScheduler = () => {
             const now = this.context.currentTime * 1000;
-
-            // ♩=120における四分音符長（ミリ秒
-            let tick = (60 * 1000) / tempo;
+            let tick = (1000 * 60) / tempo;
 
             for (
                 let nextClickTimeStamp = lastClickTimeStamp + tick;
@@ -65,28 +78,70 @@ export class Metronome {
                 if (nextClickTimeStamp - now < 0) {
                     continue;
                 }
+                nBeat++;
+                if (isMusicMode) {
+                    if (nBeat > beats.value) {
+                        assignmentToBar(bar + 1);
+                        nBeat = 1;
+                        if (bar in this.rhythm) {
+                            this.rhythm[bar].count++;
+                            if ("tempo" in this.rhythm[bar]) {
+                                setTempo(this.rhythm[bar].tempo);
+                                tick = (1000 * 60) / tempo;
+                            }
+                            if ("beats" in this.rhythm[bar]) {
+                                setBeats(this.rhythm[bar].beats);
+                            }
+                            if ("jump" in this.rhythm[bar]) {
+                                console.log(this.rhythm[bar]);
+                                if (this.rhythm[bar].jump.time === this.rhythm[bar].count) {
+                                    assignmentToBar(this.rhythm[bar].jump.to);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (nBeat > beats.value) {
+                        nBeat = 1;
+                    }
+                }
 
-                count++;
+                //Fin.
+                if (isMusicMode) {
+                    if (bar >= this.rhythm.bars - 1) {
+                        clearInterval(this.clickSchedulerTimerID);
+                        setTimeout(() => {
+                            this.stop();
+                        }, nextClickTimeStamp - now);
+                        return;
+                    }
+                }
 
                 // 予約時間をループで使っていたDOMHighResTimeStampからAudioContext向けに変換
                 const nextClickTime = nextClickTimeStamp / 1000;
 
                 //Hi & Low tone
-                if (count % beats == 0) {
+                if (nBeat === 1) {
                     this.osc.frequency.setValueAtTime(this.highTone, nextClickTime);
                 } else {
                     this.osc.frequency.setValueAtTime(this.lowTone, nextClickTime);
                 }
 
-                //Beat count update
-                const beatCountTimeOutID = setTimeout(() => {
-                    if (isPlaying) {
-                        nBeat++;
-                        nBeatElement.innerText = (nBeat % beats) + 1;
-                    }
-                }, nextClickTimeStamp - now);
-
-                this.beatCountTimeOutIDs.push(beatCountTimeOutID);
+                //Elements update            
+                const createElementsUpdater = (nBeat, bar, tempo, beats) => {
+                    return setTimeout(() => {
+                        if (isPlaying) {
+                            nBeatElement.innerText = (nBeat);
+                            if (isMusicMode) {
+                                refreshTempoElements(tempo);
+                                setBarElements(bar);
+                                refreshBeatsElements(beats)
+                                console.log(`${bar}小節目`);
+                            }
+                        }
+                    }, nextClickTimeStamp - now);
+                }
+                this.beatCountTimeOutIDs.push(createElementsUpdater(nBeat, bar, tempo, beats));
 
                 //Reserve next click
                 this.gain.gain.setValueAtTime(this.gainValue, nextClickTime);
@@ -101,7 +156,6 @@ export class Metronome {
         this.clickSchedulerTimerID = setInterval(clickScheduler, 700);
     }
 
-    //Metronome stop
     stop() {
         setIsPlayingTo(false);
 
