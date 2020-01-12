@@ -2,32 +2,39 @@
 
 ## TODO
 ---
-### Rhythm
+### Table
 * How to set a rhythm input table ?
     * What is the table design?
-* How to save files ?
+* How to add row / delete row
+* How to convert JSON and Table 
     
 ---
 ### Other
 * How to count loop and show ?
 * what kind of sound ?
-* How to combine "metronome" and "metronome_music" ?
 * How to change values with the keyboard ?
 * Strip literals
-* Add refresh function
+
 ---
 
 ## Doing
-* How to handle tempo/tick/beats in music.js ?
 * How to select beats ?
 * How to design app ?
 * How to show MusicMode ?
+* Add refresh function
 
 ### Issues
-* beats cant be selected when return from musicMode
+
 ---
 
 ## Done
+* How to save files ? => localStorage
+* beats cant be selected when return from musicMode
+* How to handle tempo/tick/beats in music.js ? => set directly 
+* How to combine "metronome" and "metronome_music" ? =>
+    * metronome manages click scheduling
+    * music manages musicData
+
 * Organizing closure();
 * learn create pure Object => Object.assign({},obj)  or JSON.perse(JSON.stringify(obj))
 * decide file format => JSON
