@@ -18,7 +18,7 @@ tempoRange.min = MIN_TEMPO;
 tempoRange.step = TEMPO_STEP;
 
 import { addLongTouchEvent } from "./touch_action.js";
-import { isMusicMode } from "./metronome_music.js"
+import { isMusicMode } from "./music.js"
 
 export let tempo = DEFAULT_TEMPO;
 export function addTempoEvents() {
@@ -27,8 +27,7 @@ export function addTempoEvents() {
         if (isMusicMode) return;
         if (tempo < MAX_TEMPO) {
             tempo++;
-            tempoElement.innerText = tempo;
-            tempoRange.value = tempo;
+            refreshTempoElements(tempo);
         }
     });
 
@@ -36,8 +35,7 @@ export function addTempoEvents() {
         if (isMusicMode) return;
         if (tempo > MIN_TEMPO) {
             tempo--;
-            tempoElement.innerText = tempo;
-            tempoRange.value = tempo;
+            refreshTempoElements(tempo);
         }
     });
 
@@ -47,8 +45,10 @@ export function addTempoEvents() {
         tempoElement.innerText = tempo;
     });
 }
-export function setTempoElements(getTempo) {
+export function setTempo(getTempo) {
     if (Number(getTempo)) tempo = getTempo;
+};
+export function refreshTempoElements(tempo) {
     tempoElement.innerText = tempo;
     tempoRange.value = tempo;
 };
