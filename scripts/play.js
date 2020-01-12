@@ -9,7 +9,6 @@ const playElement = document.getElementById("play");
 playElement.innerText = PLAY_ICON;
 
 import { metronome, newMetronome } from "./metronome.js"
-import { isMusicMode, music, newMusic } from "./metronome_music.js"
 import { rhythm } from "./rhythm.js"
 
 export let isPlaying = false;
@@ -19,20 +18,11 @@ export function setIsPlayingTo(boolean) {
 }
 export function addPlayEvent() {
     playElement.addEventListener("click", () => {
-        if (!isMusicMode) {
-            if (!isPlaying) {
-                newMetronome();
-                metronome.start();
-            } else {
-                metronome.stop();
-            }
+        if (!isPlaying) {
+            newMetronome(rhythm);
+            metronome.start();
         } else {
-            if (!isPlaying) {
-                newMusic(rhythm);
-                music.start();
-            } else {
-                music.stop();
-            }
+            metronome.stop();
         }
     });
 }

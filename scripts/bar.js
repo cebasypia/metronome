@@ -16,7 +16,8 @@ barsElement.innerText = DEFAULT_BAR;
 import { isPlaying, setIsPlayingTo } from "./play.js"
 import { addLongTouchEvent } from "./touch_action.js";
 import { rhythm } from "./rhythm.js"
-import { isMusicMode, music } from "./metronome_music.js"
+import { metronome } from "./metronome.js"
+import { isMusicMode } from "./music.js"
 
 export let bar = DEFAULT_BAR;
 export function addBarEvents() {
@@ -40,7 +41,7 @@ export function addBarEvents() {
         barElement.innerText = bar;
         countElement.innerText = bar;
         if (isPlaying) {
-            music.stop();
+            metronome.stop();
             setIsPlayingTo(false);
         }
     };
