@@ -3,7 +3,8 @@ import { addTempoEvents } from "./tempo.js"
 addTempoEvents();
 
 //Beat
-import { addBeatEvents } from "./beat.js"
+import { makeBeatsChoices, addBeatEvents } from "./beat.js"
+makeBeatsChoices();
 addBeatEvents();
 
 //Rhythm
