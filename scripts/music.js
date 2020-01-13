@@ -6,6 +6,7 @@ import { metronome } from "./metronome.js"
 import { isPlaying } from "./play.js"
 import { assignmentToBar } from "./bar.js"
 import { setRhythmTo } from "./rhythm.js"
+import { hideAllSubWindow } from "./window.js"
 
 export let isMusicMode = false;
 
@@ -15,19 +16,15 @@ export function setIsMusicModeTo(boolean) {
 
 export function addMusicEvent() {
     musicElement.addEventListener("change", (event) => {
+        if (isPlaying) metronome.stop();
+        hideAllSubWindow();
         if (event.target.value === METRONOME) {
-            if (isPlaying) metronome.stop();
             setIsMusicModeTo(false);
         } else if (localStorage.getItem(event.target.value)) {
             const buf = localStorage.getItem(event.target.value);
             setRhythmTo(JSON.parse(buf))
-            if (isMusicMode) {
-                if (isPlaying) metronome.stop();
-                assignmentToBar(1);
-            } else {
-                if (isPlaying) metronome.stop();
-                setIsMusicModeTo(true);
-            }
+            assignmentToBar(1);
+            setIsMusicModeTo(true);
         }
     });
 };
