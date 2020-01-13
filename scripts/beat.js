@@ -1,16 +1,26 @@
 //Constant definition
 const DEFAULT_BEATS = "4/4";
+const CHOICE_CLASS = "two columns choices";
 const BEATS = {
     "1/4": { src: "./images/1_4.png", value: 1 },
     "2/4": { src: "./images/2_4.png", value: 2 },
     "3/4": { src: "./images/3_4.png", value: 3 },
-    "4/4": { src: "./images/4_4.png", value: 4 }
+    "4/4": { src: "./images/4_4.png", value: 4 },
+    "5/4": { src: "./images/5_4.png", value: 5 },
+    "6/4": { src: "./images/6_4.png", value: 6 },
+    "2/8": { src: "./images/2_8.png", value: 2 },
+    "3/8": { src: "./images/3_8.png", value: 3 },
+    "6/8": { src: "./images/6_8.png", value: 6 },
+    "9/8": { src: "./images/9_8.png", value: 9 },
+    "12/8": { src: "./images/12_8.png", value: 12 },
+    "back": { value: "back" }
 };
 
 //Get elements
 const beatsElement = document.getElementById("beats");
 const beatsWindow = document.getElementById("beats--window");
-const beatsChange = document.getElementById("beats--change");
+const beatsChoices1 = document.getElementById("beats--select--1");
+const beatsChoices2 = document.getElementById("beats--select--2");
 
 //Initialize elements
 // beatsElement.innerText = DEFAULT_BEATS;
@@ -25,18 +35,24 @@ export function addBeatEvents() {
         if (isMusicMode) return;
         beatsWindow.style.visibility = "visible";
     });
-    beatsChange.addEventListener("click", () => {
-        if (isMusicMode) return;
-        beatsWindow.style.visibility = "hidden";
-    });
-    const beatsImages = document.getElementsByClassName("circle");
-    for (let i = 0; i < beatsImages.length; i++) {
-        beatsImages[i].addEventListener("click", function () {
+    const beatsChoices = document.getElementsByClassName("choices");
+    for (let i = 0; i < beatsChoices.length; i++) {
+        beatsChoices[i].addEventListener("click", function () {
             // MODIFY children
-            beatsElement.children[0].src = BEATS[this.getAttribute("value")].src;
-            beats = BEATS[this.getAttribute("value")];
-            changeBeats();
+            if (this.getAttribute("value") !== "back") {
+                beatsElement.children[0].src = BEATS[this.getAttribute("value")].src;
+                beats = BEATS[this.getAttribute("value")];
+                changeBeats();
+            }
+            beatsWindow.style.visibility = "hidden";
         });
+    }
+};
+const changeBeats = () => {
+    if (isPlaying) {
+        metronome.stop();
+        newMetronome();
+        metronome.start();
     }
 };
 
@@ -46,10 +62,22 @@ export function setBeats(getBeats) {
 export function refreshBeatsElements(getBeats) {
     beatsElement.children[0].src = getBeats.src;
 }
-function changeBeats() {
-    if (isPlaying) {
-        metronome.stop();
-        newMetronome();
-        metronome.start();
-    }
+
+export const makeBeatsChoices = () => {
+    Object.keys(BEATS).forEach((key, index) => {
+        const dom = (index < 6 ? beatsChoices1 : beatsChoices2);
+        makeButtonElement(key, dom);
+    });
 };
+const makeButtonElement = (value, dom) => {
+    const button = document.createElement("button");
+    button.setAttribute("type", "button");
+    button.setAttribute("class", CHOICE_CLASS);
+    button.setAttribute("value", value);
+    const textNode = document.createTextNode(value);
+    button.appendChild(textNode);
+    dom.appendChild(button);
+};
+
+
+
