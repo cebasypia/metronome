@@ -41,6 +41,7 @@ export function addTempoEvents() {
 
     //Tempo add input event to range
     tempoRange.addEventListener("input", () => {
+        if (isMusicMode) return;
         tempo = tempoRange.value;
         tempoElement.innerText = tempo;
     });
