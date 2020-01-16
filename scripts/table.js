@@ -1,10 +1,21 @@
-const RHYTHM_EDITING_TABLE_ID = "rhythmEditingTable";
-const RHYTHM_EDITING_TABLE_BODY_ID = "rhythmEditingTableBody";
+const TABLE_BUTTON_ID = "table--button";
+const TABLE_WINDOW_ID = "table--window";
+const RHYTHM_EDITING_TABLE_ID = "rhythm--editing--table";
+const RHYTHM_EDITING_TABLE_BODY_ID = "rhythm--editing--table--body";
+const tableButton = document.getElementById(TABLE_BUTTON_ID);
+const tableWindow = document.getElementById(TABLE_WINDOW_ID);
 const tableElement = document.getElementById(RHYTHM_EDITING_TABLE_ID);
 const tBodyElement = document.getElementById(RHYTHM_EDITING_TABLE_BODY_ID);
 
 // Initialize 
 // Array.from(tBodyElement.tBodies[0].rows).forEach((e) => makeEditable(e));
+
+const addTableWindowEvent = () => {
+    tableButton.addEventListener("click", () => {
+        tableWindow.style.visibility = "visible";
+    });
+};
+addTableWindowEvent();
 
 function addRow(obj = {}, bar) {
     rows = Array.from(tBodyElement.rows);

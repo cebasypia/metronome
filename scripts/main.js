@@ -23,3 +23,6 @@ addPlayEvent();
 import { addMusicEvent, refreshMusicElements } from "./music.js"
 addMusicEvent();
 refreshMusicElements();
+
+import { addWindowEvents } from "./window.js"
+addWindowEvents();

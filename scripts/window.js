@@ -1,3 +1,10 @@
+const subWindows = document.getElementsByClassName("sub--window");
+const beatsWindow = document.getElementById("beats--window");
+export const addWindowEvents = () => {
+    beatsWindow.addEventListener("click", () => {
+        beatsWindow.style.visibility = "hidden";
+    });
+};
 export const setVisibility = (dom, boolean) => {
     dom.style.visibility = (boolean ? "visible" : "hidden");
 }
