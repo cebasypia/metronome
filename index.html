@@ -77,7 +77,7 @@
 
         <!-- PLAY -->
         <div class="row child--centered">
-            <button type="button" class="button-primary twelve columns" id="play">
+            <button type="button" class="twelve columns button-primary" id="play">
                 <i class="material-icons">
                     play_arrow
                 </i>
@@ -98,20 +98,13 @@
         </div>
 
         <!-- TABLE -->
-        <div class="child--centered sub--window">
-            <table class="u-full-width" id="rhythmEditingTable">
-                <thead>
-                    <th>小節番号</th>
-                    <th>拍子</th>
-                    <th>テンポ</th>
-                    <th>ジャンプ</th>
-                </thead>
-                <tbody id="rhythmEditingTableBody">
-                </tbody>
-            </table>
+        <div class="row child--centered">
+            <button type="button" class="" id="table--button">table</button>
         </div>
+
     </div>
 
+    <!-- BEATS SELECT WINDOW -->
     <div class="container sub--window" id="beats--window">
         <div id="beats--select">
             <div class="row child--centered" id="beats--select--1">
@@ -119,6 +112,21 @@
             <div class="row child--centered" id="beats--select--2">
             </div>
         </div>
+    </div>
+
+    <!-- EDITING TABLE WINDOW -->
+    <div class="container sub--window table-wrap" id="table--window">
+        <table class="js-table" id="rhythm--editing--table">
+            <!-- <table class="u-full-width" id="rhythm--editing--table"> -->
+            <thead>
+                <th>小節番号</th>
+                <th>拍子</th>
+                <th>テンポ</th>
+                <th>ジャンプ</th>
+            </thead>
+            <!-- <tbody id="rhythm--editing--table--body">
+            </tbody> -->
+        </table>
     </div>
 
     <script>
