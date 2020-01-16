@@ -28,12 +28,13 @@ const beatsChoices2 = document.getElementById("beats--select--2");
 import { isPlaying } from "./play.js"
 import { metronome, newMetronome } from "./metronome.js"
 import { isMusicMode } from "./music.js"
+import { setVisibility } from "./window.js"
 
 export let beats = BEATS[DEFAULT_BEATS];
 export function addBeatEvents() {
     beatsElement.addEventListener("click", () => {
         if (isMusicMode) return;
-        beatsWindow.style.visibility = "visible";
+        setVisibility(beatsWindow, true);
     });
     const beatsChoices = document.getElementsByClassName("choices");
     for (let i = 0; i < beatsChoices.length; i++) {
@@ -44,7 +45,6 @@ export function addBeatEvents() {
                 beats = BEATS[this.getAttribute("value")];
                 changeBeats();
             }
-            beatsWindow.style.visibility = "hidden";
         });
     }
 };
