@@ -1,3 +1,7 @@
+//Circle
+import { initCircle } from "./circle.js"
+initCircle();
+
 // Tempo
 import { addTempoEvents } from "./tempo.js"
 addTempoEvents();
@@ -24,5 +28,6 @@ import { addMusicEvent, refreshMusicElements } from "./music.js"
 addMusicEvent();
 refreshMusicElements();
 
+//Window
 import { addWindowEvents } from "./window.js"
 addWindowEvents();

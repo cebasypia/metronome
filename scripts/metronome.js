@@ -8,11 +8,12 @@ const nBeatElement = document.getElementById("n--beat");
 //Initialize elements
 nBeatElement.innerText = DEFAULT_N_BEAT;
 
-import { isPlaying, setIsPlayingTo } from "./play.js"
-import { isMusicMode } from "./music.js"
-import { beats, setBeats, refreshBeatsElements } from "./beat.js"
-import { tempo, setTempo, refreshTempoElements } from "./tempo.js"
-import { bar, assignmentToBar, setBarElements } from "./bar.js"
+import { isPlaying, setIsPlayingTo } from "./play.js";
+import { isMusicMode } from "./music.js";
+import { beats, setBeats, refreshBeatsElements } from "./beat.js";
+import { tempo, setTempo, refreshTempoElements } from "./tempo.js";
+import { bar, assignmentToBar, setBarElements } from "./bar.js";
+import { startCircleAnimation } from "./circle.js";
 
 export let metronome;
 export function newMetronome(gainValue, highTone, lowTone) {
@@ -60,6 +61,7 @@ export class Metronome {
         this.gain.gain.setValueAtTime(this.gainValue, 0);
         this.gain.gain.linearRampToValueAtTime(0, 0.05);
         nBeatElement.innerText = 1;
+        startCircleAnimation(tempo);
 
         // スケジュール済みのクリックのタイミングを覚えておきます。
         // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
@@ -132,6 +134,7 @@ export class Metronome {
                     return setTimeout(() => {
                         if (isPlaying) {
                             nBeatElement.innerText = (nBeat);
+                            startCircleAnimation(tempo);
                             if (isMusicMode) {
                                 refreshTempoElements(tempo);
                                 setBarElements(bar);
