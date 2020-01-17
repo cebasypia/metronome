@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./styles/Skeleton-2.0.4/css/skeleton.css" />
     <link rel="stylesheet" href="./styles/metronome.css" />
     <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="scripts/pwacompat.min.js"></script>
 </head>
@@ -34,14 +35,19 @@
         </header>
 
         <!-- TEMPO -->
-        <div class="row child--centered">
-            <button type="button" class="four columns" id="tempo--down">Tempo-</button>
-            <div class="four columns font--large" id="tempo">100</div>
-            <button type="button" class="four columns" id="tempo--up">Tempo+</button>
+        <div class="child--centered">
+            <div class="child--centered" id="animation">
+                <canvas id="beats--anime"></canvas>
+                <div id="tempo"></div>
+            </div>
         </div>
 
-        <!-- TEMPO_RANGE -->
-        <input type="range" class="input-range" id="tempo--range" />
+        <div class="row child--centered">
+            <button type="button" class="one column button-primary" id="tempo--down">-</button>
+            <input type="range" class="ten columns input-range" id="tempo--range" />
+            <button type="button" class="one column button-primary" id="tempo--up">+</button>
+        </div>
+
 
         <!-- BAR -->
         <div class="row child--centered">
