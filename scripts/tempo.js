@@ -43,7 +43,7 @@ export function addTempoEvents() {
     tempoRange.addEventListener("input", () => {
         if (isMusicMode) return;
         tempo = tempoRange.value;
-        tempoElement.innerText = tempo;
+        refreshTempoElements(tempo);
     });
 }
 export function setTempo(getTempo) {
