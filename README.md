@@ -13,21 +13,28 @@
 * How to count loop and show ?
 * what kind of sound ?
 * How to change values with the keyboard ?
-* Strip literals
+* How to design app ?
+* How to show MusicMode ?
+* How to describe a beats in real time ?
+* How to implement accel. and rit. ?
+* How to implement editable table ?
+    * convert table to JSON and vice versa
 
 ---
 
 ## Doing
-* How to select beats ?
-* How to design app ?
-* How to show MusicMode ?
-* Add refresh function
+* Strip literals
+* How to define canvas and wrapper size 
+* How to define font-size in tempoElement 
+* fix layout collapse of button( .one.column )
 
 ### Issues
 
 ---
 
 ## Done
+* Add refresh function
+* How to select beats ? => Simply with buttons and string ( 1/4 etc ) 
 * How to save files ? => localStorage
 * beats cant be selected when return from musicMode
 * How to handle tempo/tick/beats in music.js ? => set directly 
