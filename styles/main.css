@@ -1,0 +1,138 @@
+.child--centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+body {
+    /* width: 98vw;
+    height: 98vh;
+    margin: 1vh 1vw; */
+    width: 100vw;
+    height: 100vh;
+    font-family: "Caveat", cursive;
+}
+.container {
+    display: grid;
+    padding: 0;
+}
+
+#main {
+    position:relative;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: 100%;
+    grid-template-rows: 8.34% 50% 8.34% 16.66% 16.66%;
+}
+
+#main > header {
+    grid-row: 1/2;
+    grid-column: 1/2;
+    grid-template-columns: 33% 34% 33%;
+    grid-template-rows: 100%;
+}
+
+#menu--cell {
+    grid-row: 1/2;
+    grid-column: 1/2;
+}
+#menu {
+    width: 50%;
+    height: 38px;
+}
+#music--cell {
+    grid-row: 1/2;
+    grid-column: 3/4;
+}
+#music {
+    width: 90%;
+}
+
+#main > #canvases {
+    position: relative;
+    width: 80vw;
+    height: 80vw;
+    max-width: 300px;
+    max-height: 300px;
+    margin: auto;
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+
+#main > #tempo--row {
+    grid-row: 3/4;
+    grid-column: 1/2;
+    grid-template-columns: 16.7% 16.7% 16.6% 16.6% 16.7% 16.7%;
+    grid-template-rows: 100%;
+}
+#tempo--down--cell {
+    grid-row: 1/2;
+    grid-column: 1/2;
+}
+#range--cell {
+    grid-row: 1/2;
+    grid-column: 2/6;
+}
+#tempo--up--cell {
+    grid-row: 1/2;
+    grid-column: 6/7;
+}
+.tempo--button {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%
+}
+
+#main > #settings--row {
+    grid-row: 4/5;
+    grid-column: 1/2;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-rows: 100%;
+}
+#beats {
+    grid-row: 1/2;
+    grid-column: 1/2;
+}
+#n--beat {
+    grid-row: 1/2;
+    grid-column: 2/3;
+}
+#blank {
+    grid-row: 1/2;
+    grid-column: 3/4;
+}
+#settings--cell {
+    grid-row: 1/2;
+    grid-column: 4/5;
+}
+
+#main > #play--cell {
+    grid-row: 5/6;
+    grid-column: 1/2;
+}
+#play {
+    width: 100vw;
+    height: 100%;
+    border-radius: 0;
+    font-size: 2rem;
+}
+
+.canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#base{
+    z-index: 2;
+}
+#polygon{
+    z-index: 1;
+}
+#pulsation{
+    z-index: 0;
+}
+
+
+.display--none {
+    display: none;
+}
