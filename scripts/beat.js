@@ -6,6 +6,7 @@ import { isPlaying } from './play.js'
 import { metronome, newMetronome } from './metronome.js'
 import { isMusicMode } from './music.js'
 import { setVisibility } from './window.js'
+import { initCanvas } from './canvas.js'
 
 const DEFAULT_BEATS = '4/4'
 const CHOICE_CLASS = 'two columns choices'
@@ -42,7 +43,8 @@ export function addBeatEvents() {
       // MODIFY children
       if (this.getAttribute('value') !== 'back') {
         beatsElement.children[0].src = BEATS[this.getAttribute('value')].src
-        beats = BEATS[this.getAttribute('value')]
+        setBeats(this.getAttribute('value'))
+        initCanvas(beats.value)
         changeBeats()
       }
     })
@@ -65,7 +67,8 @@ export function refreshBeatsElements(getBeats) {
 
 export const makeBeatsChoices = () => {
   Object.keys(BEATS).forEach((key, index) => {
-    const dom = index < 6 ? beatsChoices1 : beatsChoices2
+    // const dom = index < 6 ? beatsChoices1 : beatsChoices2
+    const dom = document.getElementById('beats--select')
     makeButtonElement(key, dom)
   })
 }

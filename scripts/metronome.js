@@ -4,7 +4,7 @@ import { isMusicMode } from './music.js'
 import { beats, setBeats, refreshBeatsElements } from './beat.js'
 import { tempo, setTempo, refreshTempoElements } from './tempo.js'
 import { bar, assignmentToBar, setBarElements } from './bar.js'
-import { startCircleAnimation } from './circle.js'
+import { startAnimation } from './canvas.js'
 
 const DEFAULT_N_BEAT = 0
 
@@ -61,7 +61,7 @@ export class Metronome {
     this.gain.gain.setValueAtTime(this.gainValue, 0)
     this.gain.gain.linearRampToValueAtTime(0, 0.05)
     nBeatElement.innerText = 1
-    startCircleAnimation(tempo)
+    startAnimation(tempo, beats.value, nBeat)
 
     // スケジュール済みのクリックのタイミングを覚えておきます。
     // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
@@ -134,7 +134,7 @@ export class Metronome {
           return setTimeout(() => {
             if (isPlaying) {
               nBeatElement.innerText = nBeat
-              startCircleAnimation(tempo)
+              startAnimation(tempo, beats.value, nBeat)
               if (isMusicMode) {
                 refreshTempoElements(tempo)
                 setBarElements(bar)

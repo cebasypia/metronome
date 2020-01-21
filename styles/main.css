@@ -57,6 +57,7 @@ body {
   margin: auto;
   grid-row: 2/3;
   grid-column: 1/2;
+  z-index: -1;
 }
 
 #main > #tempo--row {
@@ -123,15 +124,26 @@ body {
   left: 0;
 }
 #base {
-  z-index: 2;
-}
-#polygon {
   z-index: 1;
 }
-#pulsation {
-  z-index: 0;
+#animation {
+  z-index: 2;
 }
 
 .display--none {
   display: none;
+}
+
+#beats--select {
+  background-color: rgba(230, 230, 230, 0.5);
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+#beats--select .choices {
+  background-color: white;
+  font-size: small;
+  margin: 3px;
+  width: 14%;
+  height: 38px;
 }

@@ -13,11 +13,6 @@ body {
   /* margin-top:8px;
     position:relative; */
 }
-#animation {
-  width: 200px;
-  height: 200px;
-  position: relative;
-}
 
 canvas {
   width: 100%;
@@ -58,11 +53,6 @@ canvas {
   bottom: 0;
   /* left:0; */
   /* border-radius: 5px; */
-}
-#beats--select .choices {
-  background-color: white;
-  padding: 0;
-  margin: 3px;
 }
 
 .font--large {
