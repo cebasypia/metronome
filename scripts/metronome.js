@@ -1,177 +1,177 @@
-//Constant definition
-const DEFAULT_N_BEAT = 0;
+// Constant definition
+import { isPlaying, setIsPlayingTo } from './play.js'
+import { isMusicMode } from './music.js'
+import { beats, setBeats, refreshBeatsElements } from './beat.js'
+import { tempo, setTempo, refreshTempoElements } from './tempo.js'
+import { bar, assignmentToBar, setBarElements } from './bar.js'
+import { startCircleAnimation } from './circle.js'
 
-//Get elements
-const nBeatElement = document.getElementById("n--beat");
+const DEFAULT_N_BEAT = 0
 
+// Get elements
+const nBeatElement = document.getElementById('n--beat')
 
-//Initialize elements
-nBeatElement.innerText = DEFAULT_N_BEAT;
+// Initialize elements
+nBeatElement.innerText = DEFAULT_N_BEAT
 
-import { isPlaying, setIsPlayingTo } from "./play.js";
-import { isMusicMode } from "./music.js";
-import { beats, setBeats, refreshBeatsElements } from "./beat.js";
-import { tempo, setTempo, refreshTempoElements } from "./tempo.js";
-import { bar, assignmentToBar, setBarElements } from "./bar.js";
-import { startCircleAnimation } from "./circle.js";
-
-export let metronome;
+export let metronome
 export function newMetronome(gainValue, highTone, lowTone) {
-    metronome = new Metronome(gainValue, highTone, lowTone);
+  metronome = new Metronome(gainValue, highTone, lowTone)
 }
 
 export class Metronome {
-    constructor(rhythm = {}, gainValue = 0.1, highTone = 1500, lowTone = 1200) {
-        this.gainValue = gainValue;
-        this.highTone = highTone;
-        this.lowTone = lowTone;
-        this.rhythm = rhythm;
+  constructor(rhythm = {}, gainValue = 0.1, highTone = 1500, lowTone = 1200) {
+    this.gainValue = gainValue
+    this.highTone = highTone
+    this.lowTone = lowTone
+    this.rhythm = rhythm
 
-        this.clickSchedulerTimerID = 0;
-        this.beatCountTimeOutIDs = [];
+    this.clickSchedulerTimerID = 0
+    this.beatCountTimeOutIDs = []
 
-        //Web audio api settings
-        this.context = new AudioContext();
-        this.osc = this.context.createOscillator();
-        this.gain = this.context.createGain();
+    // Web audio api settings
+    this.context = new AudioContext()
+    this.osc = this.context.createOscillator()
+    this.gain = this.context.createGain()
 
-        this.gain.gain.value = 0;
-        this.osc.connect(this.gain).connect(this.context.destination);
-        this.osc.frequency.value = this.highTone;
-        this.osc.start();
-    }
-    start() {
-        setIsPlayingTo(true);
-        const test = (str) => {
-            for (let i = bar; i >= 1; i--) {
-                if (i in this.rhythm && str in this.rhythm[i]) {
-                    return this.rhythm[i][str];
-                }
-            }
-        };
+    this.gain.gain.value = 0
+    this.osc.connect(this.gain).connect(this.context.destination)
+    this.osc.frequency.value = this.highTone
+    this.osc.start()
+  }
 
-        //Define
-        if (isMusicMode) {
-            setTempo(test("tempo"));
-            setBeats(test("beats"));
+  start() {
+    setIsPlayingTo(true)
+    const test = (str) => {
+      for (let i = bar; i >= 1; i--) {
+        if (i in this.rhythm && str in this.rhythm[i]) {
+          return this.rhythm[i][str]
         }
-        let nBeat = 1;
+      }
+    }
 
-        //First note
-        this.gain.gain.setValueAtTime(this.gainValue, 0);
-        this.gain.gain.linearRampToValueAtTime(0, 0.05);
-        nBeatElement.innerText = 1;
-        startCircleAnimation(tempo);
+    // Define
+    if (isMusicMode) {
+      setTempo(test('tempo'))
+      setBeats(test('beats'))
+    }
+    let nBeat = 1
 
-        // スケジュール済みのクリックのタイミングを覚えておきます。
-        // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
-        let lastClickTimeStamp = this.context.currentTime * 1000;
+    // First note
+    this.gain.gain.setValueAtTime(this.gainValue, 0)
+    this.gain.gain.linearRampToValueAtTime(0, 0.05)
+    nBeatElement.innerText = 1
+    startCircleAnimation(tempo)
 
-        //Loop function
-        const clickScheduler = () => {
-            const now = this.context.currentTime * 1000;
-            let tick = (1000 * 60) / tempo;
+    // スケジュール済みのクリックのタイミングを覚えておきます。
+    // まだスケジュールしていませんが、次のクリックの起点として現在時刻を記録
+    let lastClickTimeStamp = this.context.currentTime * 1000
 
-            for (
-                let nextClickTimeStamp = lastClickTimeStamp + tick;
-                nextClickTimeStamp < now + 1000;
-                nextClickTimeStamp += tick
-            ) {
-                if (nextClickTimeStamp - now < 0) {
-                    continue;
+    // Loop function
+    const clickScheduler = () => {
+      const now = this.context.currentTime * 1000
+      let tick = (1000 * 60) / tempo
+
+      for (
+        let nextClickTimeStamp = lastClickTimeStamp + tick;
+        nextClickTimeStamp < now + 1000;
+        nextClickTimeStamp += tick
+      ) {
+        if (nextClickTimeStamp - now < 0) {
+          continue
+        }
+        nBeat++
+        if (isMusicMode) {
+          if (nBeat > beats.value) {
+            assignmentToBar(bar + 1)
+            nBeat = 1
+            if (bar in this.rhythm) {
+              this.rhythm[bar].count++
+              if ('tempo' in this.rhythm[bar]) {
+                setTempo(this.rhythm[bar].tempo)
+                tick = (1000 * 60) / tempo
+              }
+              if ('beats' in this.rhythm[bar]) {
+                setBeats(this.rhythm[bar].beats)
+              }
+              if ('jump' in this.rhythm[bar]) {
+                console.log(this.rhythm[bar])
+                if (this.rhythm[bar].jump.time === this.rhythm[bar].count) {
+                  assignmentToBar(this.rhythm[bar].jump.to)
                 }
-                nBeat++;
-                if (isMusicMode) {
-                    if (nBeat > beats.value) {
-                        assignmentToBar(bar + 1);
-                        nBeat = 1;
-                        if (bar in this.rhythm) {
-                            this.rhythm[bar].count++;
-                            if ("tempo" in this.rhythm[bar]) {
-                                setTempo(this.rhythm[bar].tempo);
-                                tick = (1000 * 60) / tempo;
-                            }
-                            if ("beats" in this.rhythm[bar]) {
-                                setBeats(this.rhythm[bar].beats);
-                            }
-                            if ("jump" in this.rhythm[bar]) {
-                                console.log(this.rhythm[bar]);
-                                if (this.rhythm[bar].jump.time === this.rhythm[bar].count) {
-                                    assignmentToBar(this.rhythm[bar].jump.to);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (nBeat > beats.value) {
-                        nBeat = 1;
-                    }
-                }
-
-                //Fin.
-                if (isMusicMode) {
-                    if (bar >= this.rhythm.bars - 1) {
-                        clearInterval(this.clickSchedulerTimerID);
-                        setTimeout(() => {
-                            this.stop();
-                        }, nextClickTimeStamp - now);
-                        return;
-                    }
-                }
-
-                // 予約時間をループで使っていたDOMHighResTimeStampからAudioContext向けに変換
-                const nextClickTime = nextClickTimeStamp / 1000;
-
-                //Hi & Low tone
-                if (nBeat === 1) {
-                    this.osc.frequency.setValueAtTime(this.highTone, nextClickTime);
-                } else {
-                    this.osc.frequency.setValueAtTime(this.lowTone, nextClickTime);
-                }
-
-                //Elements update            
-                const createElementsUpdater = (nBeat, bar, tempo, beats) => {
-                    return setTimeout(() => {
-                        if (isPlaying) {
-                            nBeatElement.innerText = (nBeat);
-                            startCircleAnimation(tempo);
-                            if (isMusicMode) {
-                                refreshTempoElements(tempo);
-                                setBarElements(bar);
-                                refreshBeatsElements(beats)
-                                console.log(`${bar}小節目`);
-                            }
-                        }
-                    }, nextClickTimeStamp - now);
-                }
-                this.beatCountTimeOutIDs.push(createElementsUpdater(nBeat, bar, tempo, beats));
-
-                //Reserve next click
-                this.gain.gain.setValueAtTime(this.gainValue, nextClickTime);
-                this.gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-
-                //Update lastClickTimeStamp 
-                lastClickTimeStamp = nextClickTimeStamp;
+              }
             }
-        };
-        //Loop start
-        clickScheduler();
-        this.clickSchedulerTimerID = setInterval(clickScheduler, 700);
+          }
+        } else {
+          if (nBeat > beats.value) {
+            nBeat = 1
+          }
+        }
+
+        // Fin.
+        if (isMusicMode) {
+          if (bar >= this.rhythm.bars - 1) {
+            clearInterval(this.clickSchedulerTimerID)
+            setTimeout(() => {
+              this.stop()
+            }, nextClickTimeStamp - now)
+            return
+          }
+        }
+
+        // 予約時間をループで使っていたDOMHighResTimeStampからAudioContext向けに変換
+        const nextClickTime = nextClickTimeStamp / 1000
+
+        // Hi & Low tone
+        if (nBeat === 1) {
+          this.osc.frequency.setValueAtTime(this.highTone, nextClickTime)
+        } else {
+          this.osc.frequency.setValueAtTime(this.lowTone, nextClickTime)
+        }
+
+        // Elements update
+        const createElementsUpdater = (nBeat, bar, tempo, beats) => {
+          return setTimeout(() => {
+            if (isPlaying) {
+              nBeatElement.innerText = nBeat
+              startCircleAnimation(tempo)
+              if (isMusicMode) {
+                refreshTempoElements(tempo)
+                setBarElements(bar)
+                refreshBeatsElements(beats)
+                console.log(`${bar}小節目`)
+              }
+            }
+          }, nextClickTimeStamp - now)
+        }
+        this.beatCountTimeOutIDs.push(createElementsUpdater(nBeat, bar, tempo, beats))
+
+        // Reserve next click
+        this.gain.gain.setValueAtTime(this.gainValue, nextClickTime)
+        this.gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05)
+
+        // Update lastClickTimeStamp
+        lastClickTimeStamp = nextClickTimeStamp
+      }
     }
+    // Loop start
+    clickScheduler()
+    this.clickSchedulerTimerID = setInterval(clickScheduler, 700)
+  }
 
-    stop() {
-        setIsPlayingTo(false);
+  stop() {
+    setIsPlayingTo(false)
 
-        this.context.close();
+    this.context.close()
 
-        //Cancel reservation
-        clearInterval(this.clickSchedulerTimerID);
+    // Cancel reservation
+    clearInterval(this.clickSchedulerTimerID)
 
-        this.beatCountTimeOutIDs.forEach((timeOutID) => {
-            clearTimeout(timeOutID);
-        });
+    this.beatCountTimeOutIDs.forEach((timeOutID) => {
+      clearTimeout(timeOutID)
+    })
 
-        //Update Beat count
-        nBeatElement.innerText = 0;
-    }
+    // Update Beat count
+    nBeatElement.innerText = 0
+  }
 }

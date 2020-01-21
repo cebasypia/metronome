@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>Metronome</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
     <!-- <link rel="stylesheet" href="./styles/Skeleton-2.0.4/css/skeleton.css" /> -->
     <link rel="stylesheet" href="./styles/metronome.css" />
     <link rel="stylesheet" href="./styles/main.css" />
     <link rel="stylesheet" href="./styles/button.css" />
     <link rel="stylesheet" href="./styles/form.css" />
     <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="scripts/pwacompat.min.js"></script>
-</head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="./dist/pwacompat.min.js"></script>
+  </head>
 
-<body>
+  <body>
     <div class="container" id="main">
-        <header class="container">
-            <div class="child--centered" id="menu--cell">
-                <button type="button" class="child--centered" id="menu">
-                    <i class=" material-icons">
-                        menu
-                    </i>
-                </button>
-            </div>
-            <div class="child--centered" id="music--cell">
-                <select class="child--centered" id="music"></select>
-            </div>
-        </header>
-        <!-- <header>
+      <header class="container">
+        <div class="child--centered" id="menu--cell">
+          <button type="button" class="child--centered" id="menu">
+            <i class=" material-icons">
+              menu
+            </i>
+          </button>
+        </div>
+        <div class="child--centered" id="music--cell">
+          <select class="child--centered" id="music"></select>
+        </div>
+      </header>
+      <!-- <header>
             <div class="row child--centered">
                 <button type="button" class="two columns child--centered button" id="menu">
                     <i class=" material-icons">
@@ -49,63 +51,66 @@
             </div>
         </header> -->
 
-        <!-- CANVAS -->
-        <div class="child--centered" id="canvases">
-            <canvas class="canvas" id="beats--anime"></canvas>
-            <div id="tempo"></div>
-        </div>
-        <!-- <div class="child--centered">
+      <!-- CANVAS -->
+      <div class="child--centered" id="canvases">
+        <canvas class="canvas" id="beats--anime"></canvas>
+        <div id="tempo"></div>
+      </div>
+      <!-- <div class="child--centered">
             <div class="child--centered" id="animation">
                 <canvas id="beats--anime"></canvas>
                 <div id="tempo"></div>
             </div>
         </div> -->
 
-        <!-- TEMPO -->
-        <div class="container" id="tempo--row">
-            <div class="child--centered" id="tempo--down--cell">
-                <button type="button" class="tempo--button button-primary" id="tempo--down">-</button>
-            </div>
-            <div class="child--centered" id="range--cell">
-                <input type="range" class="ten columns input-range" id="tempo--range" />
-            </div>
-            <div class="child--centered" id="tempo--up--cell">
-                <button type="button" class="tempo--button button-primary" id="tempo--up">+</button>
-            </div>
+      <!-- TEMPO -->
+      <div class="container" id="tempo--row">
+        <div class="child--centered" id="tempo--down--cell">
+          <button type="button" class="tempo--button button-primary" id="tempo--down">
+            -
+          </button>
         </div>
-        <!-- <div class="row child--centered">
+        <div class="child--centered" id="range--cell">
+          <input type="range" class="ten columns input-range" id="tempo--range" />
+        </div>
+        <div class="child--centered" id="tempo--up--cell">
+          <button type="button" class="tempo--button button-primary" id="tempo--up">
+            +
+          </button>
+        </div>
+      </div>
+      <!-- <div class="row child--centered">
             <button type="button" class="one column button-primary" id="tempo--down">-</button>
             <input type="range" class="ten columns input-range" id="tempo--range" />
             <button type="button" class="one column button-primary" id="tempo--up">+</button>
         </div> -->
 
-
-        <!-- BAR -->
-        <div class="row child--centered display--none">
-            <button type="button" class="four columns" id="bar--down">Bar-</button>
-            <div class="row four columns">
-                <div class="one-third column" id="bar">1</div>
-                <div class="one-third column" id="count">1</div>
-                <div class="one-third column" id="bars">1</div>
-            </div>
-            <button type="button" class="four columns" id="bar--plus">Bar+</button>
+      <!-- BAR -->
+      <div class="row child--centered display--none">
+        <button type="button" class="four columns" id="bar--down">Bar-</button>
+        <div class="row four columns">
+          <div class="one-third column" id="bar">1</div>
+          <div class="one-third column" id="count">1</div>
+          <div class="one-third column" id="bars">1</div>
         </div>
+        <button type="button" class="four columns" id="bar--plus">Bar+</button>
+      </div>
 
-        <!-- BEATS, nBEAT, SETTING -->
-        <div class="container" id="settings--row">
-            <div class="child--centered" id="beats">
-                <img src="./images/4_4.png" alt="拍子">
-            </div>
-            <div class="child--centered" id="n--beat">0</div>
-            <div class="child--centered" id="blank"></div>
-            <div class="child--centered" id="settings--cell">
-                <i class="material-icons">
-                    build
-                </i>
-            </div>
+      <!-- BEATS, nBEAT, SETTING -->
+      <div class="container" id="settings--row">
+        <div class="child--centered" id="beats">
+          <img src="./images/4_4.png" alt="拍子" />
         </div>
+        <div class="child--centered" id="n--beat">0</div>
+        <div class="child--centered" id="blank"></div>
+        <div class="child--centered" id="settings--cell">
+          <i class="material-icons">
+            build
+          </i>
+        </div>
+      </div>
 
-        <!-- <div class="row child--centered">
+      <!-- <div class="row child--centered">
             <div class="three columns" id="beats">
                 <img src="./images/4_4.png" alt="拍子">
             </div>
@@ -122,16 +127,16 @@
             </div>
         </div> -->
 
-        <!-- PLAY -->
-        <div class="child--centered" id="play--cell">
-            <button type="button" class="button-primary" id="play">
-                <i class="material-icons">
-                    play_arrow
-                </i>
-            </button>
-        </div>
+      <!-- PLAY -->
+      <div class="child--centered" id="play--cell">
+        <button type="button" class="button-primary" id="play">
+          <i class="material-icons">
+            play_arrow
+          </i>
+        </button>
+      </div>
 
-        <!-- <div class="row child--centered">
+      <!-- <div class="row child--centered">
             <button type="button" class="twelve columns button-primary" id="play">
                 <i class="material-icons">
                     play_arrow
@@ -142,61 +147,60 @@
             </button>
         </div> -->
 
-        <!-- FILE -->
-        <div class="row child--centered display--none">
-            <label for="rhythm--file" class="two columns child--centered button">
-                <i class=" material-icons">
-                    folder_open
-                </i>
-            </label>
-            <input type="file" id="rhythm--file" />
-        </div>
+      <!-- FILE -->
+      <div class="row child--centered display--none">
+        <label for="rhythm--file" class="two columns child--centered button">
+          <i class=" material-icons">
+            folder_open
+          </i>
+        </label>
+        <input type="file" id="rhythm--file" />
+      </div>
 
-        <!-- TABLE -->
-        <div class="row child--centered display--none">
-            <button type="button" class="" id="table--button">table</button>
-        </div>
-
+      <!-- TABLE -->
+      <div class="row child--centered display--none">
+        <button type="button" class="" id="table--button">table</button>
+      </div>
     </div>
 
     <!-- BEATS SELECT WINDOW -->
     <div class="container sub--window" id="beats--window">
-        <div id="beats--select">
-            <div class="row child--centered" id="beats--select--1">
-            </div>
-            <div class="row child--centered" id="beats--select--2">
-            </div>
-        </div>
+      <div id="beats--select">
+        <div class="row child--centered" id="beats--select--1"></div>
+        <div class="row child--centered" id="beats--select--2"></div>
+      </div>
     </div>
 
     <!-- EDITING TABLE WINDOW -->
     <div class="container sub--window table-wrap" id="table--window">
-        <table class="js-table" id="rhythm--editing--table">
-            <!-- <table class="u-full-width" id="rhythm--editing--table"> -->
-            <thead>
-                <th>小節番号</th>
-                <th>拍子</th>
-                <th>テンポ</th>
-                <th>ジャンプ</th>
-            </thead>
-            <!-- <tbody id="rhythm--editing--table--body">
+      <table class="js-table" id="rhythm--editing--table">
+        <!-- <table class="u-full-width" id="rhythm--editing--table"> -->
+        <thead>
+          <th>小節番号</th>
+          <th>拍子</th>
+          <th>テンポ</th>
+          <th>ジャンプ</th>
+        </thead>
+        <!-- <tbody id="rhythm--editing--table--body">
             </tbody> -->
-        </table>
+      </table>
     </div>
 
     <script>
-        // service workerの登録関係
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./scripts/service_worker.js').then(function (registration) {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            }).catch(function (err) {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-        }
+      // service workerの登録関係
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+          .register('./scripts/service_worker.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope)
+          })
+          .catch(function(err) {
+            console.log('ServiceWorker registration failed: ', err)
+          })
+      }
     </script>
 
     <script type="module" src="./scripts/main.js"></script>
     <script src="./scripts/table.js"></script>
-</body>
-
+  </body>
 </html>
