@@ -115,7 +115,6 @@ export const startAnimation = (tempo, beats, nBeat) => {
   const pulsator = new Pulsator(1, SIZE / 2 - 5, tick, timeStamp)
   const spinner = new Spinner(2, 5, tick, timeStamp, beats, nBeat)
   initCanvas()
-  console.log(beats)
   let time = performance.now() - pulsator.timeStamp
   const loop = () => {
     animationContext.clearRect(0, 0, SIZE, SIZE)
