@@ -2,13 +2,15 @@ import { setBarsElements } from './bar.js'
 import { setIsMusicModeTo, refreshMusicElements } from './music.js'
 
 const BAR = 'bar'
-const NOTE = 'note'
-const BEATS = 'beats'
+const COUNT = 'count'
 const TEMPO = 'tempo'
+const BEATS = 'beats'
+const NOTE = 'note'
 const JUMP = 'jump'
 const TO = 'to'
 const TIME = 'time'
 const BARS = 'bars'
+const BAR_DEFAULTS = [COUNT, TEMPO, BEATS, NOTE]
 
 const RHYTHM_FILE_ID = 'rhythm--file'
 
@@ -34,7 +36,25 @@ export const addRhythmFileEvent = () => {
 }
 
 export const setRhythmTo = (obj) => {
-  rhythm = obj
+  const rhythmBuf = []
+
+  const searchFromBehind = (bar, str) => {
+    for (let i = bar; i >= 1; i--) {
+      if (i in obj && str in obj[i]) {
+        return obj[i][str]
+      }
+    }
+    return empty
+  }
+
+  for (let i = 1; i < obj.bars; i++) {
+    rhythmBuf[i] = obj[i] ? obj[i] : {}
+    BAR_DEFAULTS.forEach((str) => {
+      rhythmBuf[i][str] = searchFromBehind(i, str)
+    })
+  }
+
+  rhythm = rhythmBuf
 }
 
 const csvToJSON = (csvText) => {

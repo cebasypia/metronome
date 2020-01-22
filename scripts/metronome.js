@@ -6,14 +6,6 @@ import { tempo, setTempo, refreshTempoElements } from './tempo.js'
 import { bar, assignmentToBar, setBarElements } from './bar.js'
 import { startAnimation } from './canvas.js'
 
-const DEFAULT_N_BEAT = 0
-
-// Get elements
-const nBeatElement = document.getElementById('n--beat')
-
-// Initialize elements
-nBeatElement.innerText = DEFAULT_N_BEAT
-
 export let metronome
 export function newMetronome(gainValue, highTone, lowTone) {
   metronome = new Metronome(gainValue, highTone, lowTone)
@@ -42,25 +34,26 @@ export class Metronome {
 
   start() {
     setIsPlayingTo(true)
-    const test = (str) => {
-      for (let i = bar; i >= 1; i--) {
-        if (i in this.rhythm && str in this.rhythm[i]) {
-          return this.rhythm[i][str]
-        }
-      }
-    }
+    // const test = (str) => {
+    //   for (let i = bar; i >= 1; i--) {
+    //     if (i in this.rhythm && str in this.rhythm[i]) {
+    //       return this.rhythm[i][str]
+    //     }
+    //   }
+    // }
 
     // Define
-    if (isMusicMode) {
-      setTempo(test('tempo'))
-      setBeats(test('beats'))
-    }
+    // if (isMusicMode) {
+    // setTempo(test('tempo'))
+    // setBeats(test('beats'))
+    // }
+    setTempo(this.rhythm[bar].tempo)
+    setBeats(this.rhythm[bar].beats)
     let nBeat = 1
 
     // First note
     this.gain.gain.setValueAtTime(this.gainValue, 0)
     this.gain.gain.linearRampToValueAtTime(0, 0.05)
-    nBeatElement.innerText = 1
     startAnimation(tempo, beats.value, nBeat)
 
     // スケジュール済みのクリックのタイミングを覚えておきます。
@@ -85,22 +78,22 @@ export class Metronome {
           if (nBeat > beats.value) {
             assignmentToBar(bar + 1)
             nBeat = 1
-            if (bar in this.rhythm) {
-              this.rhythm[bar].count++
-              if ('tempo' in this.rhythm[bar]) {
-                setTempo(this.rhythm[bar].tempo)
-                tick = (1000 * 60) / tempo
-              }
-              if ('beats' in this.rhythm[bar]) {
-                setBeats(this.rhythm[bar].beats)
-              }
-              if ('jump' in this.rhythm[bar]) {
-                console.log(this.rhythm[bar])
-                if (this.rhythm[bar].jump.time === this.rhythm[bar].count) {
-                  assignmentToBar(this.rhythm[bar].jump.to)
-                }
+            // if (bar in this.rhythm) {
+            this.rhythm[bar].count++
+            // if ('tempo' in this.rhythm[bar]) {
+            setTempo(this.rhythm[bar].tempo)
+            tick = (1000 * 60) / tempo
+            // }
+            // if ('beats' in this.rhythm[bar]) {
+            setBeats(this.rhythm[bar].beats)
+            // }
+            if ('jump' in this.rhythm[bar]) {
+              console.log(this.rhythm[bar])
+              if (this.rhythm[bar].jump.time === this.rhythm[bar].count) {
+                assignmentToBar(this.rhythm[bar].jump.to)
               }
             }
+            // }
           }
         } else {
           if (nBeat > beats.value) {
@@ -133,7 +126,6 @@ export class Metronome {
         const createElementsUpdater = (nBeat, bar, tempo, beats) => {
           return setTimeout(() => {
             if (isPlaying) {
-              nBeatElement.innerText = nBeat
               startAnimation(tempo, beats.value, nBeat)
               if (isMusicMode) {
                 refreshTempoElements(tempo)
@@ -170,8 +162,5 @@ export class Metronome {
     this.beatCountTimeOutIDs.forEach((timeOutID) => {
       clearTimeout(timeOutID)
     })
-
-    // Update Beat count
-    nBeatElement.innerText = 0
   }
 }
