@@ -11,19 +11,17 @@ const MIN_BAR = 1
 // Get elements
 const barElement = document.getElementById('bar')
 const countElement = document.getElementById('count')
-const barsElement = document.getElementById('bars')
 const barPlus = document.getElementById('bar--plus')
 const barDown = document.getElementById('bar--down')
 
 // Initialize elements
 barElement.innerText = DEFAULT_BAR
-barsElement.innerText = DEFAULT_BAR
 
 export let bar = DEFAULT_BAR
 export function addBarEvents() {
   addLongTouchEvent(barPlus, () => {
     if (!isMusicMode) return
-    if (bar < rhythm.bars - 1) {
+    if (bar < rhythm.length - 1) {
       bar++
       changeBar()
     }
