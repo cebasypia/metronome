@@ -28,8 +28,6 @@ const BEATS = {
 // Get elements
 const beatsElement = document.getElementById('beats')
 const beatsWindow = document.getElementById('beats--window')
-const beatsChoices1 = document.getElementById('beats--select--1')
-const beatsChoices2 = document.getElementById('beats--select--2')
 
 export let beats = BEATS[DEFAULT_BEATS]
 export function addBeatEvents() {
