@@ -43,12 +43,12 @@ export class Metronome {
     // }
 
     // Define
-    // if (isMusicMode) {
-    // setTempo(test('tempo'))
-    // setBeats(test('beats'))
-    // }
-    setTempo(this.rhythm[bar].tempo)
-    setBeats(this.rhythm[bar].beats)
+    if (isMusicMode) {
+      setTempo(this.rhythm[bar].tempo)
+      setBeats(this.rhythm[bar].beats)
+      // setTempo(test('tempo'))
+      // setBeats(test('beats'))
+    }
     let nBeat = 1
 
     // First note
