@@ -22,34 +22,17 @@
   <body>
     <div class="container" id="main">
       <header class="container">
-        <div class="child--centered" id="menu--cell">
+        <div class="child--centered first-column">
           <button type="button" class="child--centered" id="menu">
             <i class=" material-icons">
               menu
             </i>
           </button>
         </div>
-        <div class="child--centered" id="music--cell">
+        <div class="child--centered third-column">
           <select class="child--centered" id="music"></select>
         </div>
       </header>
-      <!-- <header>
-            <div class="row child--centered">
-                <button type="button" class="two columns child--centered button" id="menu">
-                    <i class=" material-icons">
-                        menu
-                    </i>
-                </button>
-                <div class="eight columns"></div>
-                <select class="two columns child--centered" id="music">
-                </select>
-                <button type="button" class="two columns child--centered button" id="music">
-                    <i class=" material-icons">
-                        library_music
-                    </i>
-                </button>
-            </div>
-        </header> -->
 
       <!-- CANVAS -->
       <div class="child--centered" id="canvases">
@@ -57,76 +40,50 @@
         <canvas class="canvas" id="animation"></canvas>
         <div id="tempo"></div>
       </div>
-      <!-- <div class="child--centered">
-            <div class="child--centered" id="animation">
-                <canvas id="beats--anime"></canvas>
-                <div id="tempo"></div>
-            </div>
-        </div> -->
 
       <!-- TEMPO -->
-      <div class="container" id="tempo--row">
-        <div class="child--centered" id="tempo--down--cell">
-          <button type="button" class="tempo--button button-primary" id="tempo--down">
+      <div class="container" id="tempo--control">
+        <div class="child--centered first-column">
+          <button type="button" class="circle--button button-primary" id="tempo--down">
             -
           </button>
         </div>
-        <div class="child--centered" id="range--cell">
+        <div class="child--centered second-column">
           <input type="range" class="ten columns input-range" id="tempo--range" />
         </div>
-        <div class="child--centered" id="tempo--up--cell">
-          <button type="button" class="tempo--button button-primary" id="tempo--up">
+        <div class="child--centered third-column">
+          <button type="button" class="circle--button button-primary" id="tempo--up">
             +
           </button>
         </div>
       </div>
-      <!-- <div class="row child--centered">
-            <button type="button" class="one column button-primary" id="tempo--down">-</button>
-            <input type="range" class="ten columns input-range" id="tempo--range" />
-            <button type="button" class="one column button-primary" id="tempo--up">+</button>
-        </div> -->
 
       <!-- BAR -->
-      <div class="row child--centered display--none">
-        <button type="button" class="four columns" id="bar--down">Bar-</button>
-        <div class="row four columns">
-          <div class="one-third column" id="bar">1</div>
-          <div class="one-third column" id="count">1</div>
-          <div class="one-third column" id="bars">1</div>
+      <div class="container child--centered" id="bar--control" style="visibility: hidden;">
+        <div class="first-column child--centered">
+          <button type="button" class="circle--button button-primary" id="bar--down">-</button>
         </div>
-        <button type="button" class="four columns" id="bar--plus">Bar+</button>
+        <div class="second-column" id="mark">1</div>
+        <div class="third-column" id="bar">1</div>
+        <div class="fourth-column" id="count">1</div>
+        <div class="fifth-column child--centered">
+          <button type="button" class="circle--button button-primary" id="bar--plus">+</button>
+        </div>
       </div>
 
       <!-- BEATS, nBEAT, SETTING -->
       <div class="container" id="settings--row">
-        <div class="child--centered" id="beats">
+        <div class="child--centered first-column" id="beats">
           <img src="./images/4_4.png" alt="拍子" />
         </div>
-        <div class="child--centered" id="n--beat">0</div>
-        <div class="child--centered" id="blank"></div>
-        <div class="child--centered" id="settings--cell">
+        <div class="child--centered second-column">♪</div>
+        <div class="child--centered third-column"></div>
+        <div class="child--centered fourth-column">
           <i class="material-icons">
             build
           </i>
         </div>
       </div>
-
-      <!-- <div class="row child--centered">
-            <div class="three columns" id="beats">
-                <img src="./images/4_4.png" alt="拍子">
-            </div>
-            <div class="one columns"></div>
-
-            <div class="four columns font--large" id="n--beat">0</div>
-
-            <div class="two columns font--large"></div>
-
-            <div class="two columns font--large">
-                <i class="material-icons">
-                    build
-                </i>
-            </div>
-        </div> -->
 
       <!-- PLAY -->
       <div class="child--centered" id="play--cell">
@@ -136,17 +93,6 @@
           </i>
         </button>
       </div>
-
-      <!-- <div class="row child--centered">
-            <button type="button" class="twelve columns button-primary" id="play">
-                <i class="material-icons">
-                    play_arrow
-                </i>
-                <i class="material-icons">
-                    stop
-                </i>
-            </button>
-        </div> -->
 
       <!-- FILE -->
       <div class="row child--centered display--none">
@@ -172,15 +118,12 @@
     <!-- EDITING TABLE WINDOW -->
     <div class="container sub--window table-wrap" id="table--window">
       <table class="js-table" id="rhythm--editing--table">
-        <!-- <table class="u-full-width" id="rhythm--editing--table"> -->
         <thead>
           <th>小節番号</th>
           <th>拍子</th>
           <th>テンポ</th>
           <th>ジャンプ</th>
         </thead>
-        <!-- <tbody id="rhythm--editing--table--body">
-            </tbody> -->
       </table>
     </div>
 
