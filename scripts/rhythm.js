@@ -1,4 +1,4 @@
-import { setBarsElements } from './bar.js'
+import { setControl } from './window.js'
 import { setIsMusicModeTo, refreshMusicElements } from './music.js'
 
 const BAR = 'bar'
@@ -29,6 +29,7 @@ export const addRhythmFileEvent = () => {
       setRhythmTo(obj)
       // setBarsElements(rhythm[BARS])
       refreshMusicElements(reader.fileName)
+      setControl('bar')
       setIsMusicModeTo(true)
     })
   })
