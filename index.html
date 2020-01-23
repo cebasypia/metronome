@@ -23,11 +23,17 @@
     <div class="container" id="main">
       <header class="container">
         <div class="child--centered first-column">
-          <button type="button" class="child--centered" id="menu">
+          <label for="rhythm--file" class="child--centered button">
+            <i class=" material-icons">
+              folder_open
+            </i>
+          </label>
+          <input type="file" id="rhythm--file" />
+          <!-- <button type="button" class="child--centered" id="menu">
             <i class=" material-icons">
               menu
             </i>
-          </button>
+          </button> -->
         </div>
         <div class="child--centered third-column">
           <select class="child--centered" id="music"></select>
@@ -95,14 +101,14 @@
       </div>
 
       <!-- FILE -->
-      <div class="row child--centered display--none">
-        <label for="rhythm--file" class="two columns child--centered button">
+      <!-- <div class="child--centered">
+        <label for="rhythm--file" class="child--centered button">
           <i class=" material-icons">
             folder_open
           </i>
         </label>
         <input type="file" id="rhythm--file" />
-      </div>
+      </div> -->
 
       <!-- TABLE -->
       <div class="row child--centered display--none">
