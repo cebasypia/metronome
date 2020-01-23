@@ -1,7 +1,7 @@
 // Constant definition
 import { metronome } from './metronome.js'
 import { isPlaying } from './play.js'
-import { assignmentToBar } from './bar.js'
+import { setCount } from './bar.js'
 import { setRhythmTo } from './rhythm.js'
 import { hideAllSubWindow, setControl } from './window.js'
 
@@ -24,7 +24,7 @@ export function addMusicEvent() {
     } else if (localStorage.getItem(event.target.value)) {
       const buf = localStorage.getItem(event.target.value)
       setRhythmTo(JSON.parse(buf))
-      assignmentToBar(1)
+      setCount(0)
       setControl('bar')
       setIsMusicModeTo(true)
     }

@@ -34,7 +34,6 @@ export class Metronome {
 
   start() {
     setIsPlayingTo(true)
-    console.log(count)
     // Define
     let nBeat = 1
     if (isMusicMode) {
