@@ -2,15 +2,14 @@ import { setBarsElements } from './bar.js'
 import { setIsMusicModeTo, refreshMusicElements } from './music.js'
 
 const BAR = 'bar'
-const COUNT = 'count'
-const TEMPO = 'tempo'
 const BEATS = 'beats'
+const TEMPO = 'tempo'
 const NOTE = 'note'
+const EVENTS = 'events'
 const JUMP = 'jump'
 const TO = 'to'
-const TIME = 'time'
-const BARS = 'bars'
-const BAR_DEFAULTS = [COUNT, TEMPO, BEATS, NOTE]
+const FINE = 'fine'
+const DEFAULTS = [TEMPO, BEATS, NOTE]
 
 const RHYTHM_FILE_ID = 'rhythm--file'
 
@@ -24,80 +23,127 @@ export const addRhythmFileEvent = () => {
     reader.fileName = result.name.substring(0, index)
     reader.readAsText(result)
 
-    // test Arrow function
     reader.addEventListener('load', () => {
-      csvToJSON(reader.result)
-      localStorage.setItem(this.fileName, JSON.stringify(rhythm))
-      setBarsElements(rhythm[BARS])
-      refreshMusicElements(this.fileName)
+      const obj = csvToJSON(reader.result)
+      localStorage.setItem(reader.fileName, JSON.stringify(obj))
+      setRhythmTo(obj)
+      // setBarsElements(rhythm[BARS])
+      refreshMusicElements(reader.fileName)
       setIsMusicModeTo(true)
     })
   })
 }
 
 export const setRhythmTo = (obj) => {
-  const rhythmBuf = []
+  const array = []
+  const counts = []
+  const bars = parseInt(
+    Object.keys(obj).reduce((a, b) => {
+      a = parseInt(a)
+      b = parseInt(b)
+      return a > b ? a : b
+    })
+  )
+  for (let bar = 1; bar <= bars; bar++) {
+    const buf = {}
 
-  const searchFromBehind = (bar, str) => {
-    for (let i = bar; i >= 1; i--) {
-      if (i in obj && str in obj[i]) {
-        return obj[i][str]
+    counts[bar] ? counts[bar]++ : (counts[bar] = 1)
+
+    buf.bar = bar
+    buf.time = counts[bar]
+
+    DEFAULTS.forEach((str) => {
+      buf[str] = searchBackward(obj, bar, str)
+    })
+    array.push(buf)
+
+    if (bar in obj) {
+      'time' in obj[bar] ? obj[bar].time++ : (obj[bar].time = 1)
+
+      if ('events' in obj[bar]) {
+        Object.keys(obj[bar].events).forEach((key) => {
+          switch (key) {
+            case 'fine':
+              if (obj[bar].time === obj[bar].events.fine) {
+                bar = bars
+              }
+              break
+            case 'jump':
+              if (obj[bar].time in obj[bar].events.jump)
+                bar = obj[bar].events.jump[obj[bar].time].to - 1
+              break
+            case 'accel':
+              break
+            default:
+          }
+        })
       }
     }
-    return empty
   }
+  rhythm = array
+  console.log(rhythm)
+}
 
-  for (let i = 1; i < obj.bars; i++) {
-    rhythmBuf[i] = obj[i] ? obj[i] : {}
-    BAR_DEFAULTS.forEach((str) => {
-      rhythmBuf[i][str] = searchFromBehind(i, str)
-    })
+const searchBackward = (obj, bar, str) => {
+  for (let i = bar; i > 0; i--) {
+    if (i in obj && str in obj[i]) return obj[i][str]
   }
-
-  rhythm = rhythmBuf
 }
 
 const csvToJSON = (csvText) => {
+  const result = {}
   csvText = csvText.split(/\r\n|\n/)
   csvText = csvText.map((i) => i.split(','))
   for (let column = 0; column <= csvText[0].length - 1; column++) {
     const prop = csvText[0][column]
     for (let row = 1; row < csvText.length; row++) {
       const value = csvText[row][column]
+      const bar = csvText[row][0]
       if (value) {
         switch (prop) {
           case BAR:
-            if (!rhythm[value]) {
-              rhythm[value] = { count: 0 }
-              rhythm[BARS] = value
+            if (!result[value]) {
+              result[value] = {}
             }
             break
           case NOTE: {
-            const molecule = convertToNumber(value.split('/')[0])
-            const denominator = convertToNumber(value.split('/')[1])
-            rhythm[csvText[row][0]][prop] = molecule / denominator
+            result[bar][prop] = convertToNumber(value)
             break
           }
           case BEATS:
-            rhythm[csvText[row][0]][prop] = value
+            result[bar][prop] = value
             break
           case TEMPO:
-            rhythm[csvText[row][0]][prop] = convertToNumber(value)
+            result[bar][prop] = convertToNumber(value)
             break
-          case TO:
-          case TIME:
-            if (!(JUMP in rhythm[csvText[row][0]])) {
-              rhythm[csvText[row][0]][JUMP] = {}
+          case JUMP: {
+            if (!(EVENTS in result[bar])) {
+              result[bar][EVENTS] = {}
             }
-            rhythm[csvText[row][0]][JUMP][prop] = convertToNumber(value)
+            if (!(JUMP in result[bar][EVENTS])) {
+              result[bar][EVENTS][JUMP] = {}
+            }
+            const molecule = convertToNumber(value.split('/')[0])
+            const denominator = convertToNumber(value.split('/')[1])
+
+            result[bar][EVENTS][JUMP][molecule] = {}
+            result[bar][EVENTS][JUMP][molecule][TO] = denominator
+            break
+          }
+          case FINE:
+            if (!(EVENTS in result[bar])) {
+              result[bar][EVENTS] = {}
+            }
+            result[bar][EVENTS][FINE] = convertToNumber(value)
             break
           default:
         }
       }
     }
   }
+  return result
 }
 
 const convertToNumber = (str) => {
-  return parseInt(str) | (parseInt(str) === 0) ? parseInt(str) : str
+  return Number(str) || Number(str) === 0 ? Number(str) : str
 }
