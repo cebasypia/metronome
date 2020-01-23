@@ -5,8 +5,8 @@ import { rhythm } from './rhythm.js'
 import { metronome } from './metronome.js'
 import { isMusicMode } from './music.js'
 
-const DEFAULT_BAR = 1
-const MIN_BAR = 1
+const DEFAULT_COUNT = 0
+const MIN_COUNT = 0
 
 // Get elements
 const barElement = document.getElementById('bar')
@@ -15,42 +15,40 @@ const barPlus = document.getElementById('bar--plus')
 const barDown = document.getElementById('bar--down')
 
 // Initialize elements
-barElement.innerText = DEFAULT_BAR
 
-export let bar = DEFAULT_BAR
+export let count = DEFAULT_COUNT
 export function addBarEvents() {
   addLongTouchEvent(barPlus, () => {
     if (!isMusicMode) return
-    if (bar < rhythm.length - 1) {
-      bar++
+    if (count < rhythm.length - 1) {
+      count++
       changeBar()
     }
   })
 
   addLongTouchEvent(barDown, () => {
     if (!isMusicMode) return
-    if (bar > MIN_BAR) {
-      bar--
+    if (count > MIN_COUNT) {
+      count--
       changeBar()
     }
   })
 
   function changeBar() {
-    barElement.innerText = bar
-    countElement.innerText = bar
+    refreshBarElements(count)
     if (isPlaying) {
       metronome.stop()
       setIsPlayingTo(false)
     }
   }
 }
-export function setBarElements(bar) {
-  barElement.innerText = bar
-  countElement.innerText = bar
+export function refreshBarElements(count) {
+  barElement.innerText = rhythm[count].bar
+  countElement.innerText = rhythm[count].bar
 }
 export function setBarsElements(bars) {
   barsElement.innerText = bars
 }
-export function assignmentToBar(num) {
-  bar = num
+export function setCount(num) {
+  count = num
 }
